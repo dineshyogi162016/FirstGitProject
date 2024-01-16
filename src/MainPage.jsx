@@ -18,7 +18,7 @@ const MainPage = () => {
 
    }, [])
    return (
-      <>
+      <> 
          {checkloginn > 0 &&
             <Navbar />
          }

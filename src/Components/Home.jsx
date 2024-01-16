@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-import { MdDeleteForever } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
 import products from "../ProjectData/products"
 
 const Home = () => {

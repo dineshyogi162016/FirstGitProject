@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { MdDeleteForever } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
 
 const SignupDetails = () => {
-   const [logindata, setlogindata] = useState({});
    const [checkloginn, setcheckloginn] = useState(0);
    const [signupdata, setsignupdata] = useState([])
 
@@ -18,7 +16,6 @@ const SignupDetails = () => {
 
    useEffect(()=>{
       const logdata = JSON.parse(sessionStorage.getItem("LoginData"))|| {}
-      setlogindata(logdata)
 
       const checklogin = Object.entries(logdata).length;
       setcheckloginn(checklogin);

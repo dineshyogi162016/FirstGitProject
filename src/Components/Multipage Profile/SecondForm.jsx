@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
 
 const SecondForm = ({ settabno, setdata, data, error, seterror, action, setaction, setparenttab }) => {
 
-  const [logindata, setlogindata] = useState({})
   const [seconderror, setseconderror] = useState({})
-  const navigate = useNavigate();
 
   const handlechange = (e) => {
     setdata({ ...data, [e.target.name]: e.target.value });
@@ -24,9 +21,9 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
             body: JSON.stringify(data),
           });
 
-          const result = await response.json();
+          await response.json();
           setparenttab(1)
-          setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "", hobbies: "" })
+          setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "" })
 
         } catch (error) {
           console.log("Error:", error)
@@ -41,7 +38,7 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
             body: JSON.stringify(data),
           });
 
-          const result = await response.json();
+          await response.json();
           // settabno(3)
           setdata({ firstName: "", lastName: "", phoneNo: "", age: "", state: "", city: "", gender: "", hobbies: "" })
           setaction("Submit")
@@ -92,7 +89,6 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
 
   useEffect(() => {
     const logdata = JSON.parse(sessionStorage.getItem("LoginData")) || {}
-    setlogindata(logdata)
 
     setdata({ ...data, ["user"]: logdata.email })
   }, []);

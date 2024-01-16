@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom';
 
 const FirstForm = ({settabno, setdata , data, setparenttab}) => {
    const [firsterror, setfirsterror] = useState({})
-   const navigate = useNavigate();
 
    const handlechange = (e)=>{
       setdata({...data, [e.target.name]: e.target.value});

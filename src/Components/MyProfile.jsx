@@ -31,7 +31,8 @@ const MyProfile = ({ setparenttab }) => {
 
          getprofiledata()
          sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
-
+         // console.log("Deleted Item is : ", response)
+         
       } catch (error) {
          console.log("Error:", error)
       }
