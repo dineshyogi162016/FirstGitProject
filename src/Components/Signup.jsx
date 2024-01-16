@@ -26,17 +26,38 @@ const Signup = () => {
       }
    }
 
-   const handlesubmit = ()=>{
+   const handlesubmit = async()=>{
       if(varify()){
 
-         let presignupdata = ([...signupdata]);
-         let signupdataall = presignupdata.concat(data);
-         setsignupdata(signupdataall)
+         // let presignupdata = ([...signupdata]);
+         // let signupdataall = presignupdata.concat(data);
+         // setsignupdata(signupdataall)
 
-         localStorage.setItem("SignupData", JSON.stringify(signupdataall))
-         setdata({name:"",email:"", password:""})
+         // localStorage.setItem("SignupData", JSON.stringify(signupdataall))
+         // setdata({name:"",email:"", password:""})
+         //    navigate("/")
+         //    alert("SignUp Successfully")
+
+
+         try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}signup`, {
+               method: "POST",
+               headers: {
+                  'Content-Type' : 'application/json',
+               },
+               body: JSON.stringify(data),
+            })
+
+            const result = await response.json();
+
+            setdata({name:"",email:"", password:""})
             navigate("/")
             alert("SignUp Successfully")
+
+         } catch (error) {
+            console.log("Error: ", error)
+         }
+
       }
    }
 

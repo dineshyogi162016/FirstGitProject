@@ -1,5 +1,6 @@
 require("./Config");
 const ProfileSchema = require("./Schema")
+const SignupSchema = require("./SignupSchema")
 const express = require("express");
 const cors = require("cors")
 require("dotenv").config()
@@ -9,6 +10,31 @@ const port = process.env.MY_PORT;
 console.log("port", port)
 app.use(cors())
 app.use(express.json())
+
+
+
+// API for SignUp 
+
+app.post("/signup", async(req,res) => {
+   let response = await SignupSchema(req.body)
+   let result = response.save()
+   res.send(result)
+   console.log("signup success: ", response.email)
+})
+
+app.get("/SignupDetails", async(req,res) => {
+   let response = await SignupSchema.find()
+   res.send(response)
+})
+
+app.delete("/SignupDetails/:_id", async(req, res) => {
+   let response = await SignupSchema.deleteOne(req.params)
+
+   console.log("Deleted item is : ", response)
+})
+
+
+// API for MyProfile 
 
 app.get("/profile", async (req, res) => {
    let response = await ProfileSchema.find();
@@ -26,7 +52,6 @@ app.post("/profile", async (req, res) => {
 app.delete("/profile/:_id", async (req, res) => {
    const response = await ProfileSchema.deleteOne(req.params);
    res.send(response);
-
    // console.log(response)
 })
 
@@ -37,9 +62,7 @@ app.put("/profile/:_id", async (req, res) => {
          $set: req.body
       }
    );
-
    res.send(response);
-
    // console.log("Update successfully: ", response)
 })
 

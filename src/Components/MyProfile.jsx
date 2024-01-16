@@ -9,7 +9,6 @@ const MyProfile = ({ setparenttab }) => {
 
    const getprofiledata = async () => {
       try {
-         console.log(process.env.REACT_APP_API_URL)
          const response = await fetch(`${process.env.REACT_APP_API_URL}profile`);
          const result = await response.json();
 
@@ -30,7 +29,7 @@ const MyProfile = ({ setparenttab }) => {
          });
 
          getprofiledata()
-         sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
+         // sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
          // console.log("Deleted Item is : ", response)
          
       } catch (error) {

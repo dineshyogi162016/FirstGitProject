@@ -6,22 +6,56 @@ const SignupDetails = () => {
    const [checkloginn, setcheckloginn] = useState(0);
    const [signupdata, setsignupdata] = useState([])
 
-   const handledelete = (i)=>{
-      let predelete = [...signupdata];
-      predelete.splice(i,1);
-      setsignupdata(predelete);
-      localStorage.setItem("SignupData", JSON.stringify(predelete));
-      console.log(predelete)
+
+   const getRegisterUsers = async() => {
+      try {
+         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails`);
+         let result = await response.json();
+
+         setsignupdata(result)
+         // console.log("all Signup users: ",result)
+
+      } catch (error) {
+         console.log("All register users Error: ", error )
+      }
    }
 
+
+   const handledelete = async(e)=>{
+      // let predelete = [...signupdata];
+      // predelete.splice(i,1);
+      // setsignupdata(predelete);
+      // localStorage.setItem("SignupData", JSON.stringify(predelete));
+      // console.log(predelete)
+
+      // console.log("data", e)
+
+      try {
+         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails/${e._id}`,{
+            method: "DELETE"
+         });
+         
+         getRegisterUsers()
+         // console.log("delete: ", response)
+
+      } catch (error) {
+         console.log("Signup Details delete error:", error)
+      }
+
+   }
+
+   
    useEffect(()=>{
+      getRegisterUsers()
+
       const logdata = JSON.parse(sessionStorage.getItem("LoginData"))|| {}
 
       const checklogin = Object.entries(logdata).length;
       setcheckloginn(checklogin);
 
-      let getdata = JSON.parse(localStorage.getItem("SignupData"))|| [];
-      setsignupdata(getdata); 
+      // let getdata = JSON.parse(localStorage.getItem("SignupData"))|| [];
+      // setsignupdata(getdata); 
+
 
    },[])
   return (
@@ -49,7 +83,7 @@ const SignupDetails = () => {
                            <td>{e.name}</td>
                            <td>{e.email}</td>
                            <td>{e.password}</td>
-                           <td className='d-flex justify-content-center'><button style={{fontSize:"25px"}} onClick={()=>handledelete(i)} className="btn btn-outline-danger px-1 py-1 rounded-5 d-flex"><MdDeleteForever /></button></td>
+                           <td className='d-flex justify-content-center'><button style={{fontSize:"25px"}} onClick={()=>handledelete(e)} className="btn btn-outline-danger px-1 py-1 rounded-5 d-flex"><MdDeleteForever /></button></td>
                            
                         </tr>
                         </>
