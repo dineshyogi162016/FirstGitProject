@@ -38,6 +38,10 @@ const Signup = () => {
          //    navigate("/")
          //    alert("SignUp Successfully")
 
+         const checksignup = signupdata.find(e => e.email === data.email) || {};
+      const checksignup1 = Object.entries(checksignup).length;
+
+      if(checksignup1 <= 0){
 
          try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}signup`, {
@@ -57,6 +61,10 @@ const Signup = () => {
          } catch (error) {
             console.log("Error: ", error)
          }
+      }else if (checksignup1 > 0){
+         alert("User is already exists.")
+      }
+
 
       }
    }
@@ -95,10 +103,25 @@ const Signup = () => {
       return valid;
    }
 
+   const getRegisterUsers = async() => {
+      try {
+         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails`);
+         let result = await response.json();
+
+         setsignupdata(result)
+         // console.log("all Signup users: ",result)
+
+      } catch (error) {
+         console.log("All register users Error: ", error )
+      }
+   }
+
+
    useEffect(()=> {
       let getdata = JSON.parse(localStorage.getItem("SignupData"))|| [];
       setsignupdata(getdata);      
 
+      getRegisterUsers()
       // console.log("Get All a Data: ", getdata)
    },[]);
 
