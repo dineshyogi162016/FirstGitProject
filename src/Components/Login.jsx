@@ -67,9 +67,25 @@ const Login = () => {
       return valid;
    }
 
+   const getRegisterUsers = async() => {
+      try {
+         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails`);
+         let result = await response.json();
+
+         setsignupdata(result)
+         // console.log("all Signup users: ",result)
+
+      } catch (error) {
+         console.log("All register users Error: ", error )
+      }
+   }
+
+
    useEffect(()=> {
       let getdata = JSON.parse(localStorage.getItem("SignupData"))|| [];
       setsignupdata(getdata);      
+
+      getRegisterUsers()
 
       // const checksignup = getdata.find(e => e.email   === data.email) || {};
       // const checksignup1 = Object.entries(checksignup).length;
