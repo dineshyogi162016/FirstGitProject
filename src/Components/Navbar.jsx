@@ -1,12 +1,33 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+const Swal = require('sweetalert2')
 
 const Navbar = () => {
    const navigate = useNavigate();
 
    const handlelogout = ()=>{
       sessionStorage.removeItem("LoginData");
-      navigate("/")
+
+      // Sweet Alert use 
+      const Toast = Swal.mixin({
+         toast: true,
+         position: "top-end",
+         showConfirmButton: false,
+         timer: 1500,
+         timerProgressBar: true,
+         didOpen: (toast) => {
+           toast.onmouseenter = Swal.stopTimer;
+           toast.onmouseleave = Swal.resumeTimer;
+         }
+       });
+       Toast.fire({
+         icon: "error",
+         title: "Successfully LogOut"
+       });
+
+       setTimeout(() => {
+         navigate("/")
+      }, 1500);
    }
 
   return (

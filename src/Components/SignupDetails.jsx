@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { MdDeleteForever } from "react-icons/md";
+const Swal = require('sweetalert2')
 
 const SignupDetails = () => {
    const [checkloginn, setcheckloginn] = useState(0);
@@ -33,13 +34,51 @@ const SignupDetails = () => {
       try {
          let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails/${e._id}`,{
             method: "DELETE"
-         });
+         })
          
-         getRegisterUsers()
+         if(response){
+
+            // Sweet Alert use 
+            const Toast = Swal.mixin({
+               toast: true,
+               position: "top-end",
+               showConfirmButton: false,
+               timer: 1500,
+               timerProgressBar: true,
+               didOpen: (toast) => {
+                 toast.onmouseenter = Swal.stopTimer;
+                 toast.onmouseleave = Swal.resumeTimer;
+               }
+             });
+             Toast.fire({
+               icon: "error",
+               title: "Successfully Deleted "
+             });
+
+            getRegisterUsers();
+
+         }
          // console.log("delete: ", response)
 
       } catch (error) {
          console.log("Signup Details delete error:", error)
+
+         // Sweet Alert use 
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "warning",
+            title: "Something went wrong, please try again"
+          });
       }
 
    }
@@ -55,7 +94,6 @@ const SignupDetails = () => {
 
       // let getdata = JSON.parse(localStorage.getItem("SignupData"))|| [];
       // setsignupdata(getdata); 
-
 
    },[])
   return (

@@ -1,6 +1,7 @@
 import React, {useEffect, useState } from 'react'
 import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
+const Swal = require('sweetalert2')
 
 const Signup = () => {
    const [data, setdata] = useState({
@@ -42,7 +43,6 @@ const Signup = () => {
       const checksignup1 = Object.entries(checksignup).length;
 
       if(checksignup1 <= 0){
-
          try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}signup`, {
                method: "POST",
@@ -55,14 +55,49 @@ const Signup = () => {
             const result = await response.json();
 
             setdata({name:"",email:"", password:""})
-            navigate("/")
-            alert("SignUp Successfully")
+
+            // Sweet Alert use 
+            const Toast = Swal.mixin({
+               toast: true,
+               position: "top-end",
+               showConfirmButton: false,
+               timer: 2000,
+               timerProgressBar: true,
+               didOpen: (toast) => {
+                 toast.onmouseenter = Swal.stopTimer;
+                 toast.onmouseleave = Swal.resumeTimer;
+               }
+             });
+             Toast.fire({
+               icon: "success",
+               title: "Successfully Signup "
+             });
+
+             setTimeout(() => {
+               navigate("/")
+            }, 2000);
 
          } catch (error) {
-            console.log("Error: ", error)
+            console.log("Error in Signup.jsx: ", error)
          }
       }else if (checksignup1 > 0){
-         alert("User is already exists.")
+         
+          // Sweet Alert use 
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "warning",
+            title: "User is already exists"
+          });
       }
 
 

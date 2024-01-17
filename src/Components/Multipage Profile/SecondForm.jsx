@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+const Swal = require('sweetalert2')
 
 const SecondForm = ({ settabno, setdata, data, error, seterror, action, setaction, setparenttab }) => {
 
@@ -22,11 +23,49 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
           });
 
           await response.json();
-          setparenttab(1)
+
+          // Sweet Alert use 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Successfully Profile Created "
+          });
+
+          setTimeout(() => {
+            setparenttab(1)
+         }, 1500);
           setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "" })
 
         } catch (error) {
-          console.log("Error:", error)
+          console.log("Error in Profile SecondForm.jsx:", error)
+          
+          // Sweet Alert use 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "warning",
+            title: "Something went wrong! "
+          });
+
         }
       } else if (action === "Update") {
         try {
@@ -43,7 +82,27 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
           setdata({ firstName: "", lastName: "", phoneNo: "", age: "", state: "", city: "", gender: "", hobbies: "" })
           setaction("Submit")
           sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
-          setparenttab(1)
+
+          // Sweet Alert use 
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Successfully Profile Updated "
+          });
+
+          setTimeout(() => {
+            setparenttab(1)
+         }, 1500);
 
         } catch (error) {
           console.log("Error:", error)

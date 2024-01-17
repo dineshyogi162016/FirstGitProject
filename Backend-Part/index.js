@@ -29,7 +29,8 @@ app.get("/SignupDetails", async(req,res) => {
 
 app.delete("/SignupDetails/:_id", async(req, res) => {
    let response = await SignupSchema.deleteOne(req.params)
-
+   res.send(response)
+   
    console.log("Deleted item is : ", response)
 })
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
+const Swal = require('sweetalert2')
 
 const MyProfile = ({ setparenttab }) => {
    const [myProfile, setmyProfile] = useState({})
@@ -29,11 +30,49 @@ const MyProfile = ({ setparenttab }) => {
          });
 
          getprofiledata()
+
+         // Sweet Alert use 
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "error",
+            title: "Successfully Deleted "
+          });
+
+
          // sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
          // console.log("Deleted Item is : ", response)
          
       } catch (error) {
-         console.log("Error:", error)
+         console.log("Error on MyProfile.jsx:", error)
+
+
+      // Sweet Alert use 
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "warning",
+            title: "Something went wrong! "
+          });
+
       }
 
    }
