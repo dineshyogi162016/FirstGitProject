@@ -4,10 +4,16 @@ import { Link, useNavigate } from 'react-router-dom';
 const Swal = require('sweetalert2')
 
 const Login = () => {
+   // const [data, setdata] = useState({
+   //    email: "",
+   //    password: ""
+   // });
    const [data, setdata] = useState({
-      email: "",
-      password: ""
-   });
+      userDetails : {
+         email: "",
+         password: ""
+      }
+   })
    const [error, seterror] = useState({})
    const [signupdata, setsignupdata] = useState([])
    const [passwordshow, setpasswordshow] = useState("password")
@@ -15,9 +21,16 @@ const Login = () => {
    const passwordregex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
    const navigate = useNavigate();
 
+   
+   
    const handlechange = (e)=>{
-      setdata({...data, [e.target.name]: e.target.value});
+      // setdata({...data, [e.target.name]: e.target.value});
+      setdata({...data, userDetails : {...data.userDetails, [e.target.name]: e.target.value} })
    }
+
+   // console.log("all Data console: ", data)
+
+
    const handlepasswordshowornot = ()=>{
       if(passwordshow=== "password"){
          setpasswordshow("text");
@@ -26,57 +39,77 @@ const Login = () => {
       }
    }
 
-   const handlesubmit = ()=>{
+   const handlesubmit = async ()=>{
       if(varify()){
-      const checksignup = signupdata.find(e => e.email === data.email && e.password === data.password ) || {};
-      const checksignup1 = Object.entries(checksignup).length;
+         try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}`, {
+               method: "POST",
+               headers: {
+                  'Content-Type' : "application/json",
+               },
+               body: JSON.stringify(data)
+            }) 
 
-         if(checksignup1>0){
-            sessionStorage.setItem("LoginData", JSON.stringify(data))
-            setdata({email:"", password:""})
+            const result = await response.json();
+            console.log("Login Result: ", result)
 
-            // Sweet Alert use 
-            const Toast = Swal.mixin({
-               toast: true,
-               position: "top-end",
-               showConfirmButton: false,
-               timer: 2000,
-               timerProgressBar: true,
-               didOpen: (toast) => {
-                 toast.onmouseenter = Swal.stopTimer;
-                 toast.onmouseleave = Swal.resumeTimer;
-               }
-             });
-             Toast.fire({
-               icon: "success",
-               title: "Successfully login "
-             });
-
-            setTimeout(() => {
-               navigate("/home")
-            }, 1500);
-
-
-         }else{
-
-            // Sweet Alert use 
-            const Toast = Swal.mixin({
-               toast: true,
-               position: "top-end",
-               showConfirmButton: false,
-               timer: 2000,
-               timerProgressBar: true,
-               didOpen: (toast) => {
-                 toast.onmouseenter = Swal.stopTimer;
-                 toast.onmouseleave = Swal.resumeTimer;
-               }
-             });
-             Toast.fire({
-               icon: "warning",
-               title: "Something went wrong!"
-             });
-
+         } catch (error) {
+            console.log("Something went wrong")
          }
+
+
+
+      // const checksignup = signupdata.find(e => e.email === data.email && e.password === data.password ) || {};
+      // const checksignup1 = Object.entries(checksignup).length;
+
+         // if(checksignup1>0){
+         //    sessionStorage.setItem("LoginData", JSON.stringify(data))
+         //    setdata({email:"", password:""})
+
+         //    // Sweet Alert use 
+         //    const Toast = Swal.mixin({
+         //       toast: true,
+         //       position: "top-end",
+         //       showConfirmButton: false,
+         //       timer: 2000,
+         //       timerProgressBar: true,
+         //       didOpen: (toast) => {
+         //         toast.onmouseenter = Swal.stopTimer;
+         //         toast.onmouseleave = Swal.resumeTimer;
+         //       }
+         //     });
+         //     Toast.fire({
+         //       icon: "success",
+         //       title: "Successfully login "
+         //     });
+
+         //    setTimeout(() => {
+         //       navigate("/home")
+         //    }, 1500);
+
+
+         // }else{
+
+         //    // Sweet Alert use 
+         //    const Toast = Swal.mixin({
+         //       toast: true,
+         //       position: "top-end",
+         //       showConfirmButton: false,
+         //       timer: 2000,
+         //       timerProgressBar: true,
+         //       didOpen: (toast) => {
+         //         toast.onmouseenter = Swal.stopTimer;
+         //         toast.onmouseleave = Swal.resumeTimer;
+         //       }
+         //     });
+         //     Toast.fire({
+         //       icon: "warning",
+         //       title: "Something went wrong!"
+         //     });
+
+         // }
+
+
       }
    }
 
@@ -84,20 +117,20 @@ const Login = () => {
       let valid = true;
       const localerror= {};
       
-      if(data && data.email.length === 0){
+      if(data && data.userDetails.email.length === 0){
          localerror.email = "email is required!";
          valid = false;
-      }else if(!emailregex.test(data.email)){
+      }else if(!emailregex.test(data.userDetails.email)){
          localerror.email= "not a valid email"
       }
 
-      if(data && data.password.length === 0){
+      if(data && data.userDetails.password.length === 0){
          localerror.password = "password is required!";
          valid = false;
-      }else if(data && data.password.length < 6){
+      }else if(data && data.userDetails.password.length < 6){
          localerror.password= "password must be 6 characters.";
          valid= false;
-      }else if(!passwordregex.test(data.password)){
+      }else if(!passwordregex.test(data.userDetails.password)){
          localerror.password = "use valid password";
          valid= false;
       }
@@ -131,7 +164,7 @@ const Login = () => {
       // setsignupornot(checksignup1)
 
       // console.log("Get All a Data: ", checksignup1)
-   },[]);
+   },[data]);
 
 
   return (

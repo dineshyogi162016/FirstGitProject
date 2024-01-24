@@ -4,10 +4,18 @@ import { Link, useNavigate } from 'react-router-dom';
 const Swal = require('sweetalert2')
 
 const Signup = () => {
+   // const [data, setdata] = useState({
+   //    name: "",
+   //    email: "",
+   //    password: ""
+   // });
+
    const [data, setdata] = useState({
-      name: "",
-      email: "",
-      password: ""
+      userDetails: {
+         name: "",
+         email: "",
+         password: ""
+      }
    });
    const [error, seterror] = useState({})
    const [signupdata, setsignupdata] = useState([])
@@ -17,7 +25,8 @@ const Signup = () => {
    const navigate = useNavigate();
 
    const handlechange = (e)=>{
-      setdata({...data, [e.target.name]: e.target.value});
+      // setdata({...data, [e.target.name]: e.target.value});
+      setdata({...data, userDetails: {...data.userDetails, [e.target.name]: e.target.value} })
    }
    const handlepasswordshowornot = ()=>{
       if(passwordshow=== "password"){
@@ -30,6 +39,7 @@ const Signup = () => {
    const handlesubmit = async()=>{
       if(varify()){
 
+         // Signup Code using localStorage 
          // let presignupdata = ([...signupdata]);
          // let signupdataall = presignupdata.concat(data);
          // setsignupdata(signupdataall)
@@ -39,8 +49,10 @@ const Signup = () => {
          //    navigate("/")
          //    alert("SignUp Successfully")
 
-         const checksignup = signupdata.find(e => e.email === data.email) || {};
-      const checksignup1 = Object.entries(checksignup).length;
+         const checksignup = signupdata.find(e => e.userDetails.email === data.userDetails.email) || {};
+         const checksignup1 = Object.entries(checksignup).length;
+
+         console.log("Check data signup data", checksignup1)
 
       if(checksignup1 <= 0){
          try {
@@ -81,7 +93,6 @@ const Signup = () => {
             console.log("Error in Signup.jsx: ", error)
          }
       }else if (checksignup1 > 0){
-         
           // Sweet Alert use 
          const Toast = Swal.mixin({
             toast: true,
@@ -108,28 +119,28 @@ const Signup = () => {
       let valid = true;
       const localerror= {};
       
-      if(data && data.name.length === 0){
+      if(data && data.userDetails.name.length === 0){
          localerror.name = "Name is required!";
          valid = false;
-      }else if(data && data.name.length < 4){
+      }else if(data && data.userDetails.name.length < 4){
          localerror.name= "Name must be 4 characters.";
          valid= false;
       }
 
-      if(data && data.email.length === 0){
+      if(data && data.userDetails.email.length === 0){
          localerror.email = "email is required!";
          valid = false;
-      }else if(!emailregex.test(data.email)){
+      }else if(!emailregex.test(data.userDetails.email)){
          localerror.email= "not a valid email"
       }
 
-      if(data && data.password.length === 0){
+      if(data && data.userDetails.password.length === 0){
          localerror.password = "password is required!";
          valid = false;
-      }else if(data && data.password.length < 6){
+      }else if(data && data.userDetails.password.length < 6){
          localerror.password= "password must be 6 characters.";
          valid= false;
-      }else if(!passwordregex.test(data.password)){
+      }else if(!passwordregex.test(data.userDetails.password)){
          localerror.password = "use valid password";
          valid= false;
       }
