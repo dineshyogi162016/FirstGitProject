@@ -4,26 +4,36 @@ const Swal = require('sweetalert2')
 
 const Navbar = () => {
    const navigate = useNavigate();
+   
+   const handlelogout = async()=>{
+      // sessionStorage.removeItem("LoginData");
+      
+      const logdata = JSON.parse(sessionStorage.getItem("LoginData"))|| {}
 
-   const handlelogout = ()=>{
-      sessionStorage.removeItem("LoginData");
+      const response = await fetch(`${process.env.REACT_APP_API_URL}home/${logdata._id}`,{
+         method: "DELETE"
+      })
+
+      const result = await response.json()
+      console.log("logOut: ", logdata._id )
+      console.log("responsem : ", result )
 
       // Sweet Alert use 
-      const Toast = Swal.mixin({
-         toast: true,
-         position: "top-end",
-         showConfirmButton: false,
-         timer: 1500,
-         timerProgressBar: true,
-         didOpen: (toast) => {
-           toast.onmouseenter = Swal.stopTimer;
-           toast.onmouseleave = Swal.resumeTimer;
-         }
-       });
-       Toast.fire({
-         icon: "error",
-         title: "Successfully LogOut"
-       });
+      // const Toast = Swal.mixin({
+      //    toast: true,
+      //    position: "top-end",
+      //    showConfirmButton: false,
+      //    timer: 1500,
+      //    timerProgressBar: true,
+      //    didOpen: (toast) => {
+      //      toast.onmouseenter = Swal.stopTimer;
+      //      toast.onmouseleave = Swal.resumeTimer;
+      //    }
+      //  });
+      //  Toast.fire({
+      //    icon: "error",
+      //    title: "Successfully LogOut"
+      //  });
 
        setTimeout(() => {
          navigate("/")

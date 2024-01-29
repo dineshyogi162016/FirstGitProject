@@ -52,8 +52,6 @@ const Signup = () => {
          const checksignup = signupdata.find(e => e.userDetails.email === data.userDetails.email) || {};
          const checksignup1 = Object.entries(checksignup).length;
 
-         console.log("Check data signup data", checksignup1)
-
       if(checksignup1 <= 0){
          try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}signup`, {

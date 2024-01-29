@@ -51,16 +51,43 @@ const Login = () => {
             }) 
 
             const result = await response.json();
-            console.log("Login Result: ", result)
+            // console.log("Login Result: ", result)
 
+            if(result){
+               sessionStorage.setItem("LoginData", JSON.stringify(result))
+               setdata({email:"", password:""})
+               navigate("/home")
+
+               // Sweet Alert use 
+               const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                  }
+                });
+                Toast.fire({
+                  icon: "success",
+                  title: "Successfully login "
+                });
+   
+               setTimeout(() => {
+                  navigate("/home")
+               }, 1500);
+   
+   
+            }            
+            
          } catch (error) {
             console.log("Something went wrong")
          }
 
-
-
-      // const checksignup = signupdata.find(e => e.email === data.email && e.password === data.password ) || {};
-      // const checksignup1 = Object.entries(checksignup).length;
+         // const checksignup = signupdata.find(e => e.email === data.email && e.password === data.password ) || {};
+         // const checksignup1 = Object.entries(checksignup).length;
 
          // if(checksignup1>0){
          //    sessionStorage.setItem("LoginData", JSON.stringify(data))
@@ -108,7 +135,6 @@ const Login = () => {
          //     });
 
          // }
-
 
       }
    }
