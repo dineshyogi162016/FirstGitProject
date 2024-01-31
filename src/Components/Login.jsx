@@ -28,8 +28,6 @@ const Login = () => {
       setdata({...data, userDetails : {...data.userDetails, [e.target.name]: e.target.value} })
    }
 
-   // console.log("all Data console: ", data)
-
 
    const handlepasswordshowornot = ()=>{
       if(passwordshow=== "password"){
@@ -51,13 +49,60 @@ const Login = () => {
             }) 
 
             const result = await response.json();
-            console.log("Login Result: ", result)
+
+            // Sweet Alert use 
+            const Toast = Swal.mixin({
+               toast: true,
+               position: "top-end",
+               showConfirmButton: false,
+               timer: 2000,
+               timerProgressBar: true,
+               didOpen: (toast) => {
+                 toast.onmouseenter = Swal.stopTimer;
+                 toast.onmouseleave = Swal.resumeTimer;
+               }
+             });
+
+             if(result.loginMeta){
+
+               localStorage.setItem("LoginData", JSON.stringify(result.loginMeta))
+
+               Toast.fire({
+                  icon: "success",
+                  title: "Successfully login "
+                });
+
+                setTimeout(() => {
+                   navigate("/home")
+                }, 1500);
+                
+             }else{
+               Toast.fire({
+                  icon: "warning",
+                  title: "Please fill correct details"
+                });
+             }
 
          } catch (error) {
-            console.log("Something went wrong")
+            // Sweet Alert use 
+            const Toast = Swal.mixin({
+               toast: true,
+               position: "top-end",
+               showConfirmButton: false,
+               timer: 2000,
+               timerProgressBar: true,
+               didOpen: (toast) => {
+                 toast.onmouseenter = Swal.stopTimer;
+                 toast.onmouseleave = Swal.resumeTimer;
+               }
+             });
+             Toast.fire({
+               icon: "warning",
+               title: "Something went wrong!"
+             });
+
+             console.log("Error Login : ", error )
          }
-
-
 
       // const checksignup = signupdata.find(e => e.email === data.email && e.password === data.password ) || {};
       // const checksignup1 = Object.entries(checksignup).length;
@@ -65,55 +110,14 @@ const Login = () => {
          // if(checksignup1>0){
          //    sessionStorage.setItem("LoginData", JSON.stringify(data))
          //    setdata({email:"", password:""})
-
-         //    // Sweet Alert use 
-         //    const Toast = Swal.mixin({
-         //       toast: true,
-         //       position: "top-end",
-         //       showConfirmButton: false,
-         //       timer: 2000,
-         //       timerProgressBar: true,
-         //       didOpen: (toast) => {
-         //         toast.onmouseenter = Swal.stopTimer;
-         //         toast.onmouseleave = Swal.resumeTimer;
-         //       }
-         //     });
-         //     Toast.fire({
-         //       icon: "success",
-         //       title: "Successfully login "
-         //     });
-
-         //    setTimeout(() => {
-         //       navigate("/home")
-         //    }, 1500);
-
-
          // }else{
-
-         //    // Sweet Alert use 
-         //    const Toast = Swal.mixin({
-         //       toast: true,
-         //       position: "top-end",
-         //       showConfirmButton: false,
-         //       timer: 2000,
-         //       timerProgressBar: true,
-         //       didOpen: (toast) => {
-         //         toast.onmouseenter = Swal.stopTimer;
-         //         toast.onmouseleave = Swal.resumeTimer;
-         //       }
-         //     });
-         //     Toast.fire({
-         //       icon: "warning",
-         //       title: "Something went wrong!"
-         //     });
-
+         //    console.log("Something went wrong")
          // }
-
 
       }
    }
 
-   const varify = ()=>{
+   const varify = () => {
       let valid = true;
       const localerror= {};
       

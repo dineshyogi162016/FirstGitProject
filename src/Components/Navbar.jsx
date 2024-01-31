@@ -1,12 +1,18 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { CgProfile } from "react-icons/cg";
 const Swal = require('sweetalert2')
 
 const Navbar = () => {
    const navigate = useNavigate();
 
    const handlelogout = ()=>{
-      sessionStorage.removeItem("LoginData");
+
+      const currentUser = JSON.parse(localStorage.getItem("LoginData"))
+
+      console.log("logOut Data : ", currentUser )
+
+      // localStorage.removeItem("LoginData");
 
       // Sweet Alert use 
       const Toast = Swal.mixin({
@@ -32,7 +38,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light shadow" style={{position:"sticky", top:"0", zIndex:"10"}}>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light shadow" style={{position:"sticky", top:"0", zIndex:"10", padding: "3px 20px"}}>
             <Link className="navbar-brand" to={"/home"}><strong>Welcome</strong></Link>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                <span className="navbar-toggler-icon"></span>
@@ -46,12 +52,10 @@ const Navbar = () => {
                   <li className="nav-item active">
                      <Link className="nav-link" to={"/SignupDetails"}>Resister Users</Link>
                   </li>
-                  <li className="nav-item active">
-                     <Link className="nav-link" to={"/profile"}>My Profile</Link>
-                  </li>
                </ul>
                <div className="form-inline my-2 my-lg-0">
-                  <button className="btn btn-outline-danger" onClick={handlelogout}>LogOut</button>
+                  <Link className="nav-link text-dark p-0 text-center" to={"/profile"}> <h2 className='m-0'><CgProfile /></h2>Profile</Link>
+                  {/* <button className="btn btn-outline-danger" onClick={handlelogout}>LogOut</button> */}
                </div>
 
             </div>

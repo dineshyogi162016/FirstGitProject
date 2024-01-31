@@ -12,39 +12,53 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
   const handlesubmit = async () => {
     
     if(varify()){
+      // await setdata({...data, ["user"] : JSON.parse(localStorage.getItem("LoginData")).user })
+
       if (action === "Submit") {
+
         try {
           const response = await fetch(`${process.env.REACT_APP_API_URL}profile`, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type' : 'application/json', 
+              'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
             },
             body: JSON.stringify(data),
           });
 
-          await response.json();
+          const result = await response.json();
 
-          // Sweet Alert use 
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
+          if(result) {
+
+            // Sweet Alert use 
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            if(result.result){
+              Toast.fire({
+                icon: "warning",
+                title: result.result
+              });
+            } else{
+              Toast.fire({
+                icon: "success",
+                title: "Successfully Profile Created "
+              });
+
+              setTimeout(() => {
+                setparenttab(1)
+              }, 1500);
+              setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "" })
             }
-          });
-          Toast.fire({
-            icon: "success",
-            title: "Successfully Profile Created "
-          });
-
-          setTimeout(() => {
-            setparenttab(1)
-         }, 1500);
-          setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "" })
+          }          
 
         } catch (error) {
           console.log("Error in Profile SecondForm.jsx:", error)
@@ -73,36 +87,49 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
             method: "PUT",
             headers: {
               'Content-Type': 'application/json',
+              'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
             },
             body: JSON.stringify(data),
           });
 
-          await response.json();
-          // settabno(3)
-          setdata({ firstName: "", lastName: "", phoneNo: "", age: "", state: "", city: "", gender: "", hobbies: "" })
-          setaction("Submit")
-          sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
+          const result = await response.json();
+          
 
-          // Sweet Alert use 
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
+          if(result) {
+
+            // Sweet Alert use 
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            if(result.result){
+              Toast.fire({
+                icon: "warning",
+                title: result.result
+              });
+            } else{
+              Toast.fire({
+                icon: "success",
+                title: "Successfully Profile Created "
+              });
+
+              // settabno(3)
+              setdata({ firstName: "", lastName: "", phoneNo: "", age: "", state: "", city: "", gender: "", hobbies: "" })
+              setaction("Submit")
+              sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
+
+              setTimeout(() => {
+                setparenttab(1)
+              }, 1500);
             }
-          });
-          Toast.fire({
-            icon: "success",
-            title: "Successfully Profile Updated "
-          });
-
-          setTimeout(() => {
-            setparenttab(1)
-         }, 1500);
+          }  
 
         } catch (error) {
           console.log("Error:", error)
@@ -147,9 +174,7 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
   }
 
   useEffect(() => {
-    const logdata = JSON.parse(sessionStorage.getItem("LoginData")) || {}
-
-    setdata({ ...data, ["user"]: logdata.email })
+    setdata({...data, ["user"] : JSON.parse(localStorage.getItem("LoginData")).user })
   }, []);
 
   return (

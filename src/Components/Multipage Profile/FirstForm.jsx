@@ -10,8 +10,6 @@ const FirstForm = ({settabno, setdata , data, setparenttab}) => {
    const handleVarify = ()=>{
       if(varify()){
          settabno(2)
-         console.log("varify Data:", data)
-         console.log("varify Error:", firsterror)  
       }
    }
 

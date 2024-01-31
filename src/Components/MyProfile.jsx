@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
 const Swal = require('sweetalert2')
@@ -8,30 +8,21 @@ const MyProfile = ({ setparenttab }) => {
    const [myProfile, setmyProfile] = useState({})
    const [checkloginn, setcheckloginn] = useState(0);
 
+   const navigate = useNavigate()
+
    const getprofiledata = async () => {
       try {
-         const response = await fetch(`${process.env.REACT_APP_API_URL}profile`);
-         const result = await response.json();
-
-         const logdata = JSON.parse(sessionStorage.getItem("LoginData")) || {}
-
-         let myprofiledata = result.find(e => e.user === logdata.email);
-         setmyProfile(myprofiledata)
-
-      } catch (error) {
-         console.log("Get Profile Data Error", error);
-      }
-   }
-
-   const handledelete = async (e) => {
-      try {
-         const response = await fetch(`${process.env.REACT_APP_API_URL}profile/${e._id}`, {
-            method: "DELETE",
+         const response = await fetch(`${process.env.REACT_APP_API_URL}profile`, {
+            method : "GET", 
+            headers: {
+               'Content-Type' : "application/json",
+               'user' : JSON.parse(localStorage.getItem("LoginData")).user,
+               'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
+            }
          });
 
-         getprofiledata()
-
-         // Sweet Alert use 
+         const result = await response.json();
+         
          const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
@@ -43,20 +34,70 @@ const MyProfile = ({ setparenttab }) => {
               toast.onmouseleave = Swal.resumeTimer;
             }
           });
-          Toast.fire({
-            icon: "error",
-            title: "Successfully Deleted "
-          });
 
+         if(result.result){
+            Toast.fire({
+               icon: "warning",
+               title: result.result
+             });
 
-         // sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
-         // console.log("Deleted Item is : ", response)
+         }else {
+         setmyProfile(result)
+         }
+
+      } catch (error) {
+         console.log("Get Profile Data Error", error);
+      }
+   }
+
+   const handledelete = async (e) => {
+      try {
+         const response = await fetch(`${process.env.REACT_APP_API_URL}profile/${e._id}`, {
+            method: "DELETE",
+            headers: {
+               'Content-Type' : "application/json",
+               'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
+            }
+         });
+
+         const result = await response.json();
+
+         if(result){
+
+            // Sweet Alert use 
+            const Toast = Swal.mixin({
+               toast: true,
+               position: "top-end",
+               showConfirmButton: false,
+               timer: 1500,
+               timerProgressBar: true,
+               didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+               }
+            });
+
+            if(result.result){
+               Toast.fire({
+                  icon: "warning",
+                  title: result.result
+               });
+            }else{
+               Toast.fire({
+                  icon: "error",
+                  title: "Successfully Deleted "
+               });
+               getprofiledata()
+            }
+            
+         }
+
+         
          
       } catch (error) {
          console.log("Error on MyProfile.jsx:", error)
 
-
-      // Sweet Alert use 
+         // Sweet Alert use 
          const Toast = Swal.mixin({
             toast: true,
             position: "top-end",
@@ -82,10 +123,14 @@ const MyProfile = ({ setparenttab }) => {
       setparenttab(2)
    }
 
+   const handleLogout = () => {
+      navigate("/logout")
+   }
+
    useEffect(() => {
       getprofiledata()
 
-      const logdata = JSON.parse(sessionStorage.getItem("LoginData")) || {}
+      const logdata = JSON.parse(localStorage.getItem("LoginData")) || {}
       const checklogin = Object.entries(logdata).length;
       setcheckloginn(checklogin);
 
@@ -95,9 +140,15 @@ const MyProfile = ({ setparenttab }) => {
          {checkloginn > 0 && <div className=" text-center my-2 px-4 py-4 ">
             {
                <div className="w-50 mx-auto shadow border p-4">
+                  <button className="btn btn-outline-danger mx-5 my-4" onClick={handleLogout} >LogOut</button>
                   {
-                     myProfile && <div className="">
-                        <h1>ProFile Data</h1><hr />
+                     myProfile.massage && <button className='btn btn-outline-success my-5 mx-5' onClick={() => setparenttab(2)} > Create Profile</button>
+                  }
+                  {
+                     myProfile.user && <div className="">
+                        <div> 
+                           <h1>ProFile Data</h1> 
+                        </div> <hr />
                         <h5 className='d-flex justify-content-between mx-5 my-3'>Name: <span className='text-primary ' style={{ fontWeight: "350" }} >{myProfile.firstName + " " + myProfile.lastName}</span></h5>
                         <h5 className='d-flex justify-content-between mx-5 my-3'>Email: <span className='text-primary ' style={{ fontWeight: "350" }} >{myProfile.user}</span></h5>
                         <h5 className='d-flex justify-content-between mx-5 my-3'>Age: <span className='text-primary ' style={{ fontWeight: "350" }} >{myProfile.age}</span></h5>
@@ -112,9 +163,6 @@ const MyProfile = ({ setparenttab }) => {
                            <button style={{ fontSize: "25px" }} onClick={() => handleupdate(myProfile)} className="btn btn-outline-info  px-5 py-1 rounded-5 d-flex"><FaEdit /></button>
                         </div>
                      </div>
-                  }
-                  {
-                     !myProfile && <button className='btn btn-outline-success my-5' onClick={() => setparenttab(2)} >Create Profile</button>
                   }
                </div>
             }

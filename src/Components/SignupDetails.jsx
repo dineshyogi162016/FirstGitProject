@@ -6,14 +6,26 @@ const Swal = require('sweetalert2')
 const SignupDetails = () => {
    const [checkloginn, setcheckloginn] = useState(0);
    const [signupdata, setsignupdata] = useState([])
-
+   const [APIMassage, setAPIMassage] = useState("")
 
    const getRegisterUsers = async() => {
       try {
-         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails`);
+         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails`,{
+            method : "GET",
+            headers : {
+               "Content-Type" : "application/json",
+               'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
+            }
+            
+         });
          let result = await response.json();
+         
+         if(Array.isArray( result )){
+            setsignupdata(result)
+         }else{
+            setAPIMassage( result )
+         }
 
-         setsignupdata(result)
          // console.log("all Signup users: ",result)
 
       } catch (error) {
@@ -33,10 +45,16 @@ const SignupDetails = () => {
 
       try {
          let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails/${e._id}`,{
-            method: "DELETE"
+            method: "DELETE",
+            headers : {
+               "Content-Type" : "application/json",
+               'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
+            }
          })
-         
-         if(response){
+
+         const result = await response.json()
+
+         if(result){
 
             // Sweet Alert use 
             const Toast = Swal.mixin({
@@ -50,15 +68,24 @@ const SignupDetails = () => {
                  toast.onmouseleave = Swal.resumeTimer;
                }
              });
-             Toast.fire({
-               icon: "error",
-               title: "Successfully Deleted "
-             });
 
-            getRegisterUsers();
+            if(result.result){
+               Toast.fire({
+                  icon: "warning",
+                  title: result.result
+                });
+   
+            }else {
+               Toast.fire({
+                  icon: "error",
+                  title: "Successfully Deleted "
+                });
+               
+                getRegisterUsers();
+            }
+             
 
          }
-         // console.log("delete: ", response)
 
       } catch (error) {
          console.log("Signup Details delete error:", error)
@@ -87,7 +114,7 @@ const SignupDetails = () => {
    useEffect(()=>{
       getRegisterUsers()
 
-      const logdata = JSON.parse(sessionStorage.getItem("LoginData"))|| {}
+      const logdata = JSON.parse(localStorage.getItem("LoginData"))|| {}
 
       const checklogin = Object.entries(logdata).length;
       setcheckloginn(checklogin);
@@ -101,7 +128,7 @@ const SignupDetails = () => {
       {checkloginn > 0 &&
       <div className="w-75 mx-auto my-5 shadow border px-4 pt-4 pb-1 text-center">
          <h1>Resister Users</h1><hr />
-         <table className="table table-hover">
+         {signupdata.length > 0 && <table className="table table-hover">
             <thead className='bg-secondary'>
                <tr>
                   <th scope="col">Sr. No</th>
@@ -118,9 +145,9 @@ const SignupDetails = () => {
                         <>
                         <tr>
                            <th scope="row">{i+1}</th>
-                           <td>{e.name}</td>
-                           <td>{e.email}</td>
-                           <td>{e.password}</td>
+                           <td>{e.userDetails.name}</td>
+                           <td>{e.userDetails.email}</td>
+                           <td>{e.userDetails.password}</td>
                            <td className='d-flex justify-content-center'><button style={{fontSize:"25px"}} onClick={()=>handledelete(e)} className="btn btn-outline-danger px-1 py-1 rounded-5 d-flex"><MdDeleteForever /></button></td>
                            
                         </tr>
@@ -129,7 +156,10 @@ const SignupDetails = () => {
                   })
                }               
             </tbody>
-         </table>
+         </table>}
+         {signupdata.length <= 0 && 
+            <p className='text-danger'>{APIMassage.result }</p>
+         }
       </div>
       }
       {checkloginn <= 0 && 

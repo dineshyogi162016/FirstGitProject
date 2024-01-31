@@ -9,47 +9,32 @@ const bcrypt = require("bcrypt")
 require("dotenv").config()
 const app = express();
 const port = process.env.MY_PORT;
-const api_token_key = process.env.MY_TOKEN_KEY;
+// const api_token_key = process.env.MY_TOKEN_KEY;
+const api_token_key = process.env.JWT_SECRET_KEY;
 const saltRound = 10;
 app.use(cors())
 app.use(express.json())
 
 
+// Auth Token Middleware 
+const varifyToken = (req, res, next) => {
+   let token = req.headers['authorization'];
+   if(token){
+      Jwt.verify(token, api_token_key , (err, valid) => {
+         if(err){
+            res.status(401).send({ result: "provide valid token" })
+         }
+         else{
+            next()
+         }
+      })
 
-// const varifyToken = (req, res, next) => {
-//    let token = req.headers['authorization'];
-//    if(token){
-//       token = token.split(" ")
-//       console.log("Token find well: ", token[1])
+   }else{
+      res.status(403).send({ result: "Please provide token " } )
+   }
+} 
 
-//       Jwt.verify(token, api_token, (err, valid) => {
-//          if(err){
-//             res.status(401).send({ result: "Please provide valid token" })
-//          }
-//          else{
-//             next()
-//          }
-//       })
-
-//    }else{
-//       res.status(403).send({ result: "Please provide token in headers" } )
-//    }
-// } 
-
-
-
-// this is for generating token 
-
-   // Jwt.sign({result}, api_token, {expiresIn: "2h"}, (err, token) => {
-   //    if(err){
-   //       res.send("Something error in Token Generating:")
-   //    }
-   //    res.send({result, aut: token})
-
-   //    console.log("Authorization: ", {result, aut: token} )
-   // })
-
-
+// SignUp API 
 app.post("/signup", async(req,res) => {
    let userDetails = await SignupSchema(req.body).userDetails
    
@@ -60,7 +45,7 @@ app.post("/signup", async(req,res) => {
    bcrypt.hash(userSignupPassword, saltRound, async(err, salt) => {
       userSignupPassword = salt;
 
-      let signUpToken = Jwt.sign({userDetails}, api_token_key);
+      let signUpToken = Jwt.sign({ userSignupEmail }, api_token_key);
       
       const signInstance = new SignupSchema ({
          userDetails:{
@@ -92,13 +77,13 @@ app.post("/", async (req,res) => {
    let ifUserExists = signupResponse.find( e => e.userDetails.email === userLoginEmail )
 
    if(!ifUserExists){
-      res.send("No User Found")
-   }else{   
+      res.status(404).send({massage: "No User Found"})
+   }else{      
       bcrypt.compare(userLoginPassword, ifUserExists.userDetails.password, (err, result)=>{
          if(result){
             bcrypt.hash(userLoginPassword, saltRound, async(err, salt) => {
             
-               const LoginToken = Jwt.sign({userDetails}, api_token_key );
+            const LoginToken = Jwt.sign({userLoginEmail}, api_token_key );
 
             const loginDataInstance = new LoginSchema ({
                userDetails:{
@@ -108,15 +93,14 @@ app.post("/", async (req,res) => {
                authToken : LoginToken
             })
 
-            console.log("Login Salt", loginDataInstance)
-
+            
             let result = await loginDataInstance.save();
-            res.send(result)
-
+            res.status(200).send({ massage: "Login Success" , loginMeta: {user : result.userDetails.email, token : result.authToken} })
+            
          })
 
          }else{
-            res.send("Password was not matched ")
+            res.status(404).send({massage: "Password was not matched "})
          }
 
       })
@@ -125,13 +109,26 @@ app.post("/", async (req,res) => {
 })
 
 
+// LogOut API 
+app.delete("/logout/:email", async (req, res) => {
+   const userMail = {userDetails : req.params}.userDetails.email;
+   
+   let LoginResponse = await LoginSchema.find() 
+   let ifUserExists = await LoginResponse.find( e => e.userDetails.email === userMail )
+   
+   if(ifUserExists){
+      const response = await LoginSchema.deleteOne({"_id" : ifUserExists._id})
+      res.send(response)
+   }
+})
 
-app.get("/SignupDetails", async(req,res) => {
+
+app.get("/SignupDetails", varifyToken , async(req,res) => {
    let response = await SignupSchema.find()
    res.send(response)
 })
 
-app.delete("/SignupDetails/:_id", async(req, res) => {
+app.delete("/SignupDetails/:_id", varifyToken , async(req, res) => {
    let response = await SignupSchema.deleteOne(req.params)
    res.send(response)
    
@@ -141,26 +138,34 @@ app.delete("/SignupDetails/:_id", async(req, res) => {
 
 // API for MyProfile 
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", varifyToken , async (req, res) => {
    let response = await ProfileSchema.find();
-   res.send(response);
-   // console.log("Profile data", response);
+   let loginUser = await req.headers['user']
+
+   let ProfileDetails = await response.find(e => e.user === loginUser )
+   if(ProfileDetails){
+      res.status(200).send(ProfileDetails);
+   }else{
+      res.status(404).send({massage: "No profile found"})
+   }
+
+   // console.log("Profile data", ProfileDetails);
 })
 
-app.post("/profile", async (req, res) => {
+app.post("/profile", varifyToken , async (req, res) => {
    let response = await ProfileSchema(req.body)
    let result = await response.save()
    res.send(result)
    // console.log("your data saved: ", result)
 })
 
-app.delete("/profile/:_id", async (req, res) => {
+app.delete("/profile/:_id", varifyToken , async (req, res) => {
    const response = await ProfileSchema.deleteOne(req.params);
    res.send(response);
    // console.log(response)
 })
 
-app.put("/profile/:_id", async (req, res) => {
+app.put("/profile/:_id", varifyToken , async (req, res) => {
    const response = await ProfileSchema.updateOne(
       req.params,
       {

@@ -38,7 +38,7 @@ const Home = () => {
    }
 
    useEffect(()=>{
-      const logdata = JSON.parse(sessionStorage.getItem("LoginData"))|| {}
+      const logdata = JSON.parse(localStorage.getItem("LoginData"))|| {}
 
       const checklogin = Object.entries(logdata).length;
       setcheckloginn(checklogin);
