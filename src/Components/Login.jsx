@@ -81,35 +81,6 @@ const Login = () => {
                });
             }
 
-            if(result){
-               sessionStorage.setItem("LoginData", JSON.stringify(result))
-               setdata({email:"", password:""})
-               navigate("/home")
-
-               // Sweet Alert use 
-               const Toast = Swal.mixin({
-                  toast: true,
-                  position: "top-end",
-                  showConfirmButton: false,
-                  timer: 2000,
-                  timerProgressBar: true,
-                  didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                  }
-                });
-                Toast.fire({
-                  icon: "success",
-                  title: "Successfully login "
-                });
-   
-               setTimeout(() => {
-                  navigate("/home")
-               }, 1500);
-   
-   
-            }            
-            
          } catch (error) {
             // Sweet Alert use 
             const Toast = Swal.mixin({
