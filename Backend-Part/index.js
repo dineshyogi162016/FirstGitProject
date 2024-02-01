@@ -18,7 +18,7 @@ app.use(express.json())
 
 const publicPath =  path.join(__dirname,"404-page.html")
 // const publicPath =  __dirname
-console.log("Current Directory : ", publicPath )
+// console.log("Current Directory : ", publicPath )
 
 // Auth Token Middleware 
 const varifyToken = (req, res, next) => {

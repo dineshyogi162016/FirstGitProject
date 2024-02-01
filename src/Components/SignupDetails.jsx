@@ -35,14 +35,14 @@ const SignupDetails = () => {
 
 
    const handledelete = async(e)=>{
+      
       // let predelete = [...signupdata];
       // predelete.splice(i,1);
       // setsignupdata(predelete);
       // localStorage.setItem("SignupData", JSON.stringify(predelete));
       // console.log(predelete)
 
-      // console.log("data", e)
-
+      
       try {
          let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails/${e._id}`,{
             method: "DELETE",
@@ -118,7 +118,7 @@ const SignupDetails = () => {
 
       const checklogin = Object.entries(logdata).length;
       setcheckloginn(checklogin);
-
+      
       // let getdata = JSON.parse(localStorage.getItem("SignupData"))|| [];
       // setsignupdata(getdata); 
 
@@ -162,7 +162,7 @@ const SignupDetails = () => {
          }
       </div>
       }
-      {checkloginn <= 0 && 
+      {!checkloginn && 
          <div className='border shadow p-5 w-50 mx-auto my-5'>
             <h1><Link to={"/"}>LogIn</Link> Required for access</h1> 
          </div>
