@@ -9,18 +9,11 @@ import SignupDetails from "./Components/SignupDetails";
 import LogOut from "./Components/LogOut";
 
 const MainPage = () => {
-   const [checkloginn, setcheckloginn] = useState(0);
-
-   useEffect(() => {
-      const logdata = JSON.parse(localStorage.getItem("LoginData")) || {}
-
-      const checklogin = Object.entries(logdata).length;
-      setcheckloginn(checklogin);
-
-   }, [])
+   let user = JSON.parse(localStorage.getItem("LoginData"))
+   
    return (
       <> 
-         {checkloginn > 0 &&
+         {user &&
             <Navbar />
          }
          <Routes>

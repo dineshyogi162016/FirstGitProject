@@ -5,40 +5,13 @@ const Swal = require('sweetalert2')
 
 const Navbar = () => {
    const navigate = useNavigate();
-
-   const handlelogout = ()=>{
-
-      const currentUser = JSON.parse(localStorage.getItem("LoginData"))
-
-      console.log("logOut Data : ", currentUser )
-
-      // localStorage.removeItem("LoginData");
-
-      // Sweet Alert use 
-      const Toast = Swal.mixin({
-         toast: true,
-         position: "top-end",
-         showConfirmButton: false,
-         timer: 1500,
-         timerProgressBar: true,
-         didOpen: (toast) => {
-           toast.onmouseenter = Swal.stopTimer;
-           toast.onmouseleave = Swal.resumeTimer;
-         }
-       });
-       Toast.fire({
-         icon: "error",
-         title: "Successfully LogOut"
-       });
-
-       setTimeout(() => {
-         navigate("/")
-      }, 1500);
+   let user = JSON.parse(localStorage.getItem("LoginData"))
+   if(user){
+      user = user.user
    }
-
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light shadow" style={{position:"sticky", top:"0", zIndex:"10", padding: "3px 20px"}}>
+      {user && <nav className="navbar navbar-expand-lg navbar-light bg-light shadow" style={{position:"sticky", top:"0", zIndex:"10", padding: "3px 20px"}}>
             <Link className="navbar-brand" to={"/home"}><strong>Welcome</strong></Link>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                <span className="navbar-toggler-icon"></span>
@@ -54,12 +27,12 @@ const Navbar = () => {
                   </li>
                </ul>
                <div className="form-inline my-2 my-lg-0">
-                  <Link className="nav-link text-dark p-0 text-center" to={"/profile"}> <h2 className='m-0'><CgProfile /></h2>Profile</Link>
+                  <Link className="nav-link text-dark p-0 text-center" to={"/profile"}> <h2 className='m-0'><CgProfile /></h2>{user}</Link>
                   {/* <button className="btn btn-outline-danger" onClick={handlelogout}>LogOut</button> */}
                </div>
 
             </div>
-      </nav>
+      </nav>}
     </>
   )
 }
