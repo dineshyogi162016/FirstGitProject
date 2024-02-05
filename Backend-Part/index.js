@@ -1,4 +1,5 @@
 require("./Config");
+require("dotenv").config()
 const ProfileSchema = require("./Schema")
 const SignupSchema = require("./SignupSchema")
 const LoginSchema = require("./LoginSchema")
@@ -6,15 +7,23 @@ const express = require("express");
 const cors = require("cors")
 const Jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-require("dotenv").config()
+const path = require("path")
+const cookieParser = require("cookie-parser")
 const app = express();
 const port = process.env.MY_PORT;
 // const api_token_key = process.env.MY_TOKEN_KEY;
 const api_token_key = process.env.JWT_SECRET_KEY;
 const saltRound = 10;
+const Products = require("./products");
+
+
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 
+const publicPath =  path.join(__dirname,"404-page.html")
+// const publicPath =  __dirname
+// console.log("Current Directory : ", publicPath )
 
 // Auth Token Middleware 
 const varifyToken = (req, res, next) => {
@@ -37,30 +46,37 @@ const varifyToken = (req, res, next) => {
 // SignUp API 
 app.post("/signup", async(req,res) => {
    let userDetails = await SignupSchema(req.body).userDetails
+   let signupResponse = await SignupSchema.find() 
    
    var userSignupPassword = userDetails.password;
    let userSignupEmail = userDetails.email;
    let userSignupName = userDetails.name;
 
-   bcrypt.hash(userSignupPassword, saltRound, async(err, salt) => {
-      userSignupPassword = salt;
+   let ifUserExists = signupResponse.find( e => e.userDetails.email === userSignupEmail )
+   
+   if(ifUserExists){
+      res.status(404).send({massage: "User already exist"})
+   }else{
+      bcrypt.hash(userSignupPassword, saltRound, async(err, salt) => {
+         userSignupPassword = salt;
 
-      let signUpToken = Jwt.sign({ userSignupEmail }, api_token_key);
-      
-      const signInstance = new SignupSchema ({
-         userDetails:{
-            name: userSignupName,
-            email: userSignupEmail,
-            password: userSignupPassword
-         },
-         authToken : signUpToken
-      })      
-      
-      const result = await signInstance.save()
-      res.send(result)
-      console.log("signup success: ", result )
-      
-   })
+         let signUpToken = Jwt.sign({ userSignupEmail }, api_token_key);
+         
+         const signInstance = new SignupSchema ({
+            userDetails:{
+               name: userSignupName,
+               email: userSignupEmail,
+               password: userSignupPassword
+            },
+            authToken : signUpToken
+         })      
+         
+         const result = await signInstance.save()
+         res.send(result)
+         // console.log("signup success: ", result )
+         
+      })
+   }
 
 })
 
@@ -98,9 +114,8 @@ app.post("/", async (req,res) => {
             res.status(200).send({ massage: "Login Success" , loginMeta: {user : result.userDetails.email, token : result.authToken} })
             
          })
-
          }else{
-            res.status(404).send({massage: "Password was not matched "})
+            res.status(404).send({massage: "Wrong Password"})
          }
 
       })
@@ -122,10 +137,17 @@ app.delete("/logout/:email", async (req, res) => {
    }
 })
 
-
+// SignupDetails API 
 app.get("/SignupDetails", varifyToken , async(req,res) => {
    let response = await SignupSchema.find()
-   res.send(response)
+
+   let newResponse = response.map((e) => {
+      let data =  e.userDetails; 
+      const { password, ...userWithoutPassword } = data;
+      return userWithoutPassword
+   })
+
+   res.send(newResponse)
 })
 
 app.delete("/SignupDetails/:_id", varifyToken , async(req, res) => {
@@ -137,7 +159,6 @@ app.delete("/SignupDetails/:_id", varifyToken , async(req, res) => {
 
 
 // API for MyProfile 
-
 app.get("/profile", varifyToken , async (req, res) => {
    let response = await ProfileSchema.find();
    let loginUser = await req.headers['user']
@@ -177,8 +198,43 @@ app.put("/profile/:_id", varifyToken , async (req, res) => {
 })
 
 
+// Searching API 
+app.get("/products/:key", async (req, res) => {
+   try {
+      let key = req.params
+      const searchResult = Products.find({
+         "$or": [
+            {"name": {"regex": ".*"+key+".*", $options : "i" }}
+         ]
+      })
+      res.send(searchResult)
+   } catch (error) {
+      res.send({error: "Product searching error"})
+      console.log("Product searching error")
+   }
+})
 
 
+
+
+// for cookie set and get throw backend
+app.get("/cookie",(req, res) => {
+   res.cookie("newcookieToken", "MyCookies", { maxAge: 60000 , httpOnly: true } ).send("cookie is successfully set")
+
+   // Use for get cookie 
+   let cookie = req.cookies
+   console.log("cookie", cookie)
+})
+
+app.get("/clearCookie", (req, res) => {
+   res.clearCookie("newcookieToken");
+   res.send("Cookie Cleared ")
+})
+
+
+app.get("*", (req, res) => {
+   res.sendFile(`${publicPath}`)
+})
 
 app.listen(port, () => {
    console.log(`Server is running on port http://localhost:${port}`);

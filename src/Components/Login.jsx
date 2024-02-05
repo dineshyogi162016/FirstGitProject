@@ -4,10 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 const Swal = require('sweetalert2')
 
 const Login = () => {
-   // const [data, setdata] = useState({
-   //    email: "",
-   //    password: ""
-   // });
    const [data, setdata] = useState({
       userDetails : {
          email: "",
@@ -15,7 +11,6 @@ const Login = () => {
       }
    })
    const [error, seterror] = useState({})
-   const [signupdata, setsignupdata] = useState([])
    const [passwordshow, setpasswordshow] = useState("password")
    const emailregex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
    const passwordregex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
@@ -61,27 +56,30 @@ const Login = () => {
                  toast.onmouseenter = Swal.stopTimer;
                  toast.onmouseleave = Swal.resumeTimer;
                }
-             });
+            });
 
              if(result.loginMeta){
-
                localStorage.setItem("LoginData", JSON.stringify(result.loginMeta))
-
                Toast.fire({
                   icon: "success",
-                  title: "Successfully login "
-                });
+                  title: result.massage
+               });
 
-                setTimeout(() => {
-                   navigate("/home")
-                }, 1500);
-                
-             }else{
+               setTimeout(() => {
+                  navigate("/home")
+               }, 1500);
+               
+            }else if(result.massage){
                Toast.fire({
                   icon: "warning",
-                  title: "Please fill correct details"
-                });
-             }
+                  title: result.massage
+               });
+            }else{
+               Toast.fire({
+                  icon: "warning",
+                  title: result.massage
+               });
+            }
 
          } catch (error) {
             // Sweet Alert use 
@@ -101,18 +99,7 @@ const Login = () => {
                title: "Something went wrong!"
              });
 
-             console.log("Error Login : ", error )
          }
-
-      // const checksignup = signupdata.find(e => e.email === data.email && e.password === data.password ) || {};
-      // const checksignup1 = Object.entries(checksignup).length;
-
-         // if(checksignup1>0){
-         //    sessionStorage.setItem("LoginData", JSON.stringify(data))
-         //    setdata({email:"", password:""})
-         // }else{
-         //    console.log("Something went wrong")
-         // }
 
       }
    }
@@ -143,37 +130,19 @@ const Login = () => {
       return valid;
    }
 
-   const getRegisterUsers = async() => {
-      try {
-         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails`);
-         let result = await response.json();
-
-         setsignupdata(result)
-         // console.log("all Signup users: ",result)
-
-      } catch (error) {
-         console.log("All register users Error: ", error )
-      }
-   }
-
-
-   useEffect(()=> {
-      let getdata = JSON.parse(localStorage.getItem("SignupData"))|| [];
-      setsignupdata(getdata);      
-
-      getRegisterUsers()
-
-      // const checksignup = getdata.find(e => e.email   === data.email) || {};
-      // const checksignup1 = Object.entries(checksignup).length;
-      // setsignupornot(checksignup1)
-
-      // console.log("Get All a Data: ", checksignup1)
-   },[data]);
+   let user = JSON.parse(localStorage.getItem("LoginData"))
 
 
   return (
     <>
-      <div className="w-50 border mx-auto p-4 my-5 rounded-5 shadow text-center">
+      {user && 
+         <div className='border shadow p-5 w-50 mx-auto my-5 text-center'>
+            <h1>Go to <Link to={"/profile"}>Profile</Link> Page</h1> 
+            <p>If you want access LOGIN page, So LOGOUT first. Because You are already login. </p>
+         </div>
+      }
+
+      { !user && <div className="w-50 border mx-auto p-4 my-5 rounded-5 shadow text-center">
          <h1 className='text-success'>LogIn Form</h1><hr />
          <label className='d-flex justify-content-between align-items-center mt-4 '><strong>Email:</strong>
             <input type="text" placeholder='Enter your email...' className='form-control w-75' name='email' value={data.email} onChange={handlechange} />
@@ -186,7 +155,8 @@ const Login = () => {
          {error.password && <p className='text-danger'>{error.password}</p>}
          <button className='btn btn-outline-success w-25 mt-4' onClick={handlesubmit}>Submit</button>
          <p className='mt-3'><Link to={"/signup"}>SignUp </Link> if you don't have account.</p>
-      </div>
+      </div> }
+
     </>
   )
 }

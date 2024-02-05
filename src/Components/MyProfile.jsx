@@ -50,73 +50,73 @@ const MyProfile = ({ setparenttab }) => {
       }
    }
 
-   const handledelete = async (e) => {
-      try {
-         const response = await fetch(`${process.env.REACT_APP_API_URL}profile/${e._id}`, {
-            method: "DELETE",
-            headers: {
-               'Content-Type' : "application/json",
-               'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
-            }
-         });
+   // const handledelete = async (e) => {
+   //    try {
+   //       const response = await fetch(`${process.env.REACT_APP_API_URL}profile/${e._id}`, {
+   //          method: "DELETE",
+   //          headers: {
+   //             'Content-Type' : "application/json",
+   //             'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
+   //          }
+   //       });
 
-         const result = await response.json();
+   //       const result = await response.json();
 
-         if(result){
+   //       if(result){
 
-            // Sweet Alert use 
-            const Toast = Swal.mixin({
-               toast: true,
-               position: "top-end",
-               showConfirmButton: false,
-               timer: 1500,
-               timerProgressBar: true,
-               didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-               }
-            });
+   //          // Sweet Alert use 
+   //          const Toast = Swal.mixin({
+   //             toast: true,
+   //             position: "top-end",
+   //             showConfirmButton: false,
+   //             timer: 1500,
+   //             timerProgressBar: true,
+   //             didOpen: (toast) => {
+   //                toast.onmouseenter = Swal.stopTimer;
+   //                toast.onmouseleave = Swal.resumeTimer;
+   //             }
+   //          });
 
-            if(result.result){
-               Toast.fire({
-                  icon: "warning",
-                  title: result.result
-               });
-            }else{
-               Toast.fire({
-                  icon: "error",
-                  title: "Successfully Deleted "
-               });
-               getprofiledata()
-            }
+   //          if(result.result){
+   //             Toast.fire({
+   //                icon: "warning",
+   //                title: result.result
+   //             });
+   //          }else{
+   //             Toast.fire({
+   //                icon: "error",
+   //                title: "Successfully Deleted "
+   //             });
+   //             getprofiledata()
+   //          }
             
-         }
+   //       }
 
          
          
-      } catch (error) {
-         console.log("Error on MyProfile.jsx:", error)
+   //    } catch (error) {
+   //       console.log("Error on MyProfile.jsx:", error)
 
-         // Sweet Alert use 
-         const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "warning",
-            title: "Something went wrong! "
-          });
+   //       // Sweet Alert use 
+   //       const Toast = Swal.mixin({
+   //          toast: true,
+   //          position: "top-end",
+   //          showConfirmButton: false,
+   //          timer: 1500,
+   //          timerProgressBar: true,
+   //          didOpen: (toast) => {
+   //            toast.onmouseenter = Swal.stopTimer;
+   //            toast.onmouseleave = Swal.resumeTimer;
+   //          }
+   //        });
+   //        Toast.fire({
+   //          icon: "warning",
+   //          title: "Something went wrong! "
+   //        });
 
-      }
+   //    }
 
-   }
+   // }
 
    const handleupdate = () => {
       sessionStorage.setItem("ProfileUpdateData", JSON.stringify(myProfile))
@@ -158,8 +158,8 @@ const MyProfile = ({ setparenttab }) => {
                         <h5 className='d-flex justify-content-between mx-5 my-3'>State: <span className='text-primary ' style={{ fontWeight: "350" }} >{myProfile.state}</span></h5>
                         <h5 className='d-flex justify-content-between mx-5 my-3'>City: <span className='text-primary ' style={{ fontWeight: "350" }} >{myProfile.city}</span></h5>
                         <hr />
-                        <div className="d-flex justify-content-between mx-5">
-                           <button style={{ fontSize: "25px" }} onClick={() => handledelete(myProfile)} className="btn btn-outline-danger  px-5 py-1 rounded-5 d-flex"><MdDeleteForever /></button>
+                        <div className="d-flex justify-content-center mx-5">
+                           {/* <button style={{ fontSize: "25px" }} onClick={() => handledelete(myProfile)} className="btn btn-outline-danger  px-5 py-1 rounded-5 d-flex"><MdDeleteForever /></button> */}
                            <button style={{ fontSize: "25px" }} onClick={() => handleupdate(myProfile)} className="btn btn-outline-info  px-5 py-1 rounded-5 d-flex"><FaEdit /></button>
                         </div>
                      </div>

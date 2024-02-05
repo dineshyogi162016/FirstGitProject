@@ -128,38 +128,44 @@ const SignupDetails = () => {
       {checkloginn > 0 &&
       <div className="w-75 mx-auto my-5 shadow border px-4 pt-4 pb-1 text-center">
          <h1>Resister Users</h1><hr />
-         {signupdata.length > 0 && <table className="table table-hover">
-            <thead className='bg-secondary'>
-               <tr>
-                  <th scope="col">Sr. No</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Password</th>
-                  <th scope="col">Delete</th>
-               </tr>
-            </thead>
-            <tbody>
-               {
-                  signupdata.map((e,i)=>{
-                     return(
-                        <>
-                        <tr>
-                           <th scope="row">{i+1}</th>
-                           <td>{e.userDetails.name}</td>
-                           <td>{e.userDetails.email}</td>
-                           <td>{e.userDetails.password}</td>
-                           <td className='d-flex justify-content-center'><button style={{fontSize:"25px"}} onClick={()=>handledelete(e)} className="btn btn-outline-danger px-1 py-1 rounded-5 d-flex"><MdDeleteForever /></button></td>
-                           
-                        </tr>
-                        </>
-                     )
-                  })
-               }               
-            </tbody>
-         </table>}
-         {signupdata.length <= 0 && 
-            <p className='text-danger'>{APIMassage.result }</p>
+         {signupdata.length <= 0 ? 
+            <div class="d-flex justify-content-center m-5">
+               <div class="spinner-border m-5" role="status">
+                  <span class="sr-only">Loading...</span>
+               </div>
+            </div>
+         :
+            <table className="table table-hover">
+               <thead className='bg-secondary'>
+                  <tr>
+                     <th scope="col">Sr. No</th>
+                     <th scope="col">Name</th>
+                     <th scope="col">Email</th>
+                     {/* <th scope="col">Password</th> */}
+                     <th scope="col">Delete</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {
+                     signupdata.map((e,i)=>{
+                        return(
+                           <>
+                           <tr>
+                              <th scope="row">{i+1}</th>
+                              <td>{e.name}</td>
+                              <td>{e.email}</td>
+                              {/* <td>{e.password}</td> */}
+                              <td className='d-flex justify-content-center'><button style={{fontSize:"25px"}} onClick={()=>handledelete(e)} className="btn btn-outline-danger px-1 py-1 rounded-5 d-flex"><MdDeleteForever /></button></td>
+                              
+                           </tr>
+                           </>
+                        )
+                     })
+                  }               
+               </tbody>
+            </table>
          }
+         
       </div>
       }
       {checkloginn <= 0 && 

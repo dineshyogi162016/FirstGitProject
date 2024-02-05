@@ -3,6 +3,9 @@ import React, {useEffect, useState} from 'react'
 const FirstForm = ({settabno, setdata , data, setparenttab}) => {
    const [firsterror, setfirsterror] = useState({})
 
+   var AgeRegex = /^[0-9]/;
+   var phoneNumRegex = /^[0-9]{10}$/ ;
+
    const handlechange = (e)=>{
       setdata({...data, [e.target.name]: e.target.value});
    }
@@ -36,14 +39,20 @@ const FirstForm = ({settabno, setdata , data, setparenttab}) => {
       if(data && data.age.length === 0){
          localerror.age = "Age is required!";
          valid = false;
+      }else if(!AgeRegex.test(data.age)){
+         localerror.age = "Age Must be a Number"
+         valid = false; 
+      }else if (data && data.age > 100 ){
+         localerror.age = "Age not be 100+"
+         valid = false;
       }
 
       if(data && data.phoneNo.length === 0){
          localerror.phoneNo = "Phone No. is required!";
          valid = false;
-      }else if(data && data.phoneNo.length !== 10){
-         localerror.phoneNo = "Phone No. must be 10 digits.";
-         valid = false;
+      }else if(!phoneNumRegex.test(data.phoneNo)){
+         localerror.phoneNo = "No. must be No. and 10 digits"
+         valid = false; 
       }
 
       setfirsterror(localerror);
@@ -77,13 +86,15 @@ const FirstForm = ({settabno, setdata , data, setparenttab}) => {
          <div className="d-flex mb-4">
             <div className="w-50">
                <label className='d-flex justify-content-between align-items-center mt-4 mr-3 text-info'><strong>Age:</strong>
-                  <input type="number" placeholder='Age...' className='form-control w-75 ' name='age' onChange={handlechange} value={data.age}/>
+                  {/* <input type="number" placeholder='Age...' className='form-control w-75 ' name='age' onChange={handlechange} value={data.age}/> */}
+                  <input type="text" placeholder='Age...' className='form-control w-75 ' name='age' onChange={handlechange} value={data.age}/>
                </label>
                {firsterror.age && <p className='text-danger' >{firsterror.age}</p>}
             </div>
             <div className="w-50">
                <label className='d-flex justify-content-between align-items-center ml-3 mt-4 text-info'><strong>phoneNo:</strong>
-                  <input type="number" placeholder='Phone number...' className='form-control w-75 ' name='phoneNo' onChange={handlechange} value={data.phoneNo}/>
+                  {/* <input type="number" placeholder='Phone number...' className='form-control w-75 ' name='phoneNo' onChange={handlechange} value={data.phoneNo}/> */}
+                  <input type="text" placeholder='Phone number...' className='form-control w-75 ' name='phoneNo' onChange={handlechange} value={data.phoneNo}/>
                </label>
                {firsterror.phoneNo && <p className='text-danger' >{firsterror.phoneNo}</p>}
             </div>

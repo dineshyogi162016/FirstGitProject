@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 const Swal = require('sweetalert2')
+const StatesAndCities = require("../../ProjectData/StatesWithCity.json")
+
 
 const SecondForm = ({ settabno, setdata, data, error, seterror, action, setaction, setparenttab }) => {
 
@@ -94,7 +96,8 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
 
           const result = await response.json();
           
-
+          console.log("result updaate", result )
+          
           if(result) {
 
             // Sweet Alert use 
@@ -117,7 +120,7 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
             } else{
               Toast.fire({
                 icon: "success",
-                title: "Successfully Profile Created "
+                title: "Successfully Profile Updated "
               });
 
               // settabno(3)
@@ -154,9 +157,6 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
       if(data && data.city.length === 0){
          localerror2.city = "City is required!";
          valid = false;
-      }else if(data && data.city.length < 4){
-         localerror2.city = "City must be 4 characters.";
-         valid= false;
       }
 
       if(data && data.gender.length === 0){
@@ -184,13 +184,33 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
         <div className="d-flex">
           <div className="w-50">
             <label className='d-flex justify-content-between align-items-center mt-4 mr-3 text-info'><strong>State:</strong>
-              <input type="text" placeholder='Your state...' className='form-control w-75 ' name='state' onChange={handlechange} value={data.state} />
+              {/* <input type="text" placeholder='Your state...' className='form-control w-75 ' name='state' onChange={handlechange} value={data.state} /> */}
+              <select name="state" placeholder='Your state...' onChange={handlechange} className='form-control w-75' value={data.state} >
+                <option selected disabled>-- Select State --</option>
+                {
+                  StatesAndCities.map((e) => {
+                    return (
+                      <option value={e.state}>{e.state}</option>
+                    )
+                    console.log("state", e.state)
+                  })
+                }
+              </select>
             </label>
             {seconderror.state && <p className='text-danger' >{seconderror.state}</p>}
           </div>            
           <div className="w-50">
             <label className='d-flex justify-content-between align-items-center mt-4 ml-3 text-info'><strong>City:</strong>
-              <input type="text" placeholder='Your city...' className='form-control w-75 ' name='city' onChange={handlechange} value={data.city} />
+              {/* <input type="text" placeholder='Your city...' className='form-control w-75 ' name='city' onChange={handlechange} value={data.city} /> */}
+              
+              <select name="city" placeholder='Your city...' onChange={handlechange} className='form-control w-75' value={data.city} >
+                <option selected disabled>-- Select City --</option>
+                {
+                  StatesAndCities.find((e) => e.state === data.state)?.City.map((city) => (
+                    <option value={city}>{city}</option>
+                  ))
+                }
+              </select>
             </label>
             {seconderror.city && <p className='text-danger' >{seconderror.city}</p>}
           </div>
