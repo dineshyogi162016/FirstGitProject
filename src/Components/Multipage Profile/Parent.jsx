@@ -8,8 +8,8 @@ const Parent = ({ setparenttab }) => {
   const [data, setdata] = useState({
     firstName: "",
     lastName: "",
-    phoneNo: 0,
-    age: 0,
+    phoneNo: "",
+    age: "",
     state: "",
     city: "",
     gender: "",

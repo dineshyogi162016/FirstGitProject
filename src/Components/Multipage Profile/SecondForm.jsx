@@ -17,7 +17,6 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
       // await setdata({...data, ["user"] : JSON.parse(localStorage.getItem("LoginData")).user })
 
       if (action === "Submit") {
-
         try {
           const response = await fetch(`${process.env.REACT_APP_API_URL}profile`, {
             method: 'POST',
@@ -31,7 +30,6 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
           const result = await response.json();
 
           if(result) {
-
             // Sweet Alert use 
             const Toast = Swal.mixin({
               toast: true,
@@ -58,6 +56,7 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
               setTimeout(() => {
                 setparenttab(1)
               }, 1500);
+
               setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "" })
             }
           }          
@@ -186,13 +185,12 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
             <label className='d-flex justify-content-between align-items-center mt-4 mr-3 text-info'><strong>State:</strong>
               {/* <input type="text" placeholder='Your state...' className='form-control w-75 ' name='state' onChange={handlechange} value={data.state} /> */}
               <select name="state" placeholder='Your state...' onChange={handlechange} className='form-control w-75' value={data.state} >
-                <option selected disabled>-- Select State --</option>
+                <option selected disabled > -- Select State -- </option>
                 {
                   StatesAndCities.map((e) => {
                     return (
                       <option value={e.state}>{e.state}</option>
                     )
-                    console.log("state", e.state)
                   })
                 }
               </select>
@@ -204,8 +202,8 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
               {/* <input type="text" placeholder='Your city...' className='form-control w-75 ' name='city' onChange={handlechange} value={data.city} /> */}
               
               <select name="city" placeholder='Your city...' onChange={handlechange} className='form-control w-75' value={data.city} >
-                <option selected disabled>-- Select City --</option>
-                {
+                <option  disabled >-- Select City --</option>
+                { data.state && 
                   StatesAndCities.find((e) => e.state === data.state)?.City.map((city) => (
                     <option value={city}>{city}</option>
                   ))
