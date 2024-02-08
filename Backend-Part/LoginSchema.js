@@ -5,7 +5,7 @@ const LoginSchema = new mongoose.Schema({
       email: String,
       password: String
    },
-   authToken: String
+   authToken: [String]
 })
 
 module.exports = mongoose.model("LoginDatas",LoginSchema)

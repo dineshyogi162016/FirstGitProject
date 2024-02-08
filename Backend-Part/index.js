@@ -106,12 +106,27 @@ app.post("/", async (req,res) => {
                   email: userLoginEmail,
                   password: salt
                },
-               authToken : LoginToken
+               authToken : [LoginToken]
             })
 
             
-            let result = await loginDataInstance.save();
-            res.status(200).send({ massage: "Login Success" , loginMeta: {user : result.userDetails.email, token : result.authToken} })
+            let LoginResponse = await LoginSchema.find() 
+            let ifUserSignedIn = await LoginResponse.find( e => e.userDetails.email === userLoginEmail )
+
+            if(!ifUserSignedIn){
+               let result = await loginDataInstance.save();
+               res.status(200).send({ massage: "Login Success" , loginMeta: {user : result.userDetails.email, token : LoginToken} })
+               
+            }else{
+
+               let result = await LoginSchema.updateOne(
+                  {_id : ifUserSignedIn._id },
+                  {$addToSet : {authToken : LoginToken}}
+               )
+
+               res.status(200).send({ massage: "Another Login Success" , loginMeta: {user : loginDataInstance.userDetails.email, token : LoginToken } })
+
+            }
             
          })
          }else{
@@ -125,17 +140,49 @@ app.post("/", async (req,res) => {
 
 
 // LogOut API 
-app.delete("/logout/:email", async (req, res) => {
-   const userMail = {userDetails : req.params}.userDetails.email;
+
+app.delete("/logoutall", async (req, res) => {
+   const userMail = req.query.email;
    
    let LoginResponse = await LoginSchema.find() 
    let ifUserExists = await LoginResponse.find( e => e.userDetails.email === userMail )
    
    if(ifUserExists){
       const response = await LoginSchema.deleteOne({"_id" : ifUserExists._id})
-      res.send(response)
+      res.status(200).send({massage: "LogOut All Accounts Success"})
+   }else{
+      res.status(404).send({massage: "No User Found"})
+   }
+
+})
+
+
+app.delete("/logout", async (req, res) => {
+
+   const userMail = req.query.email;
+   const currentUserToken = req.query.token;
+   
+   let LoginResponse = await LoginSchema.find() 
+   let ifUserExists = await LoginResponse.find( e => e.userDetails.email === userMail )
+   
+   if(ifUserExists){
+      let number = ifUserExists.authToken.length
+
+      if(number > 1){
+         const response = await LoginSchema.updateOne(
+            {"_id": ifUserExists._id },
+            {$pull: {authToken: currentUserToken}}
+         )
+         res.status(200).send({massage: "LogOut Success"})
+         
+      }else{
+         const response = await LoginSchema.deleteOne({"_id" : ifUserExists._id})
+         res.status(200).send({massage: "LogOut SuccessFull"})
+      }
    }
 })
+
+
 
 // SignupDetails API 
 app.get("/SignupDetails", varifyToken , async(req,res) => {

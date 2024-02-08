@@ -8,6 +8,7 @@ import ParentOprate from "./Components/Multipage Profile/ParentOprate";
 import SignupDetails from "./Components/SignupDetails";
 import LogOut from "./Components/LogOut";
 import PageNotFound from "./Components/PageNotFound";
+import LogOutAll from "./Components/LogOutAll";
 
 const MainPage = () => {
    let user = JSON.parse(localStorage.getItem("LoginData"))
@@ -25,6 +26,7 @@ const MainPage = () => {
             <Route path="/SignupDetails" element={<SignupDetails />} />
             <Route path="/profile" element={<ParentOprate />} />
             <Route path="/logout" element={<LogOut />} />
+            <Route path="/logoutall" element={<LogOutAll />} />
             <Route path="*" element={<PageNotFound />} />
          </Routes> 
          {/* : 

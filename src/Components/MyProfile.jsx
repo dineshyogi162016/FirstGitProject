@@ -127,6 +127,10 @@ const MyProfile = ({ setparenttab }) => {
       navigate("/logout")
    }
 
+   const handleLogoutall = () => {
+      navigate("/logoutall")
+   }
+
    useEffect(() => {
       getprofiledata()
 
@@ -141,6 +145,8 @@ const MyProfile = ({ setparenttab }) => {
             {
                <div className="w-50 mx-auto shadow border p-4">
                   <button className="btn btn-outline-danger mx-5 my-4" onClick={handleLogout} >LogOut</button>
+
+                  <button className='btn btn-outline-danger my-5 mx-5' onClick={handleLogoutall} > LogOut All Accounts </button>
                   {
                      myProfile.massage && <button className='btn btn-outline-success my-5 mx-5' onClick={() => setparenttab(2)} > Create Profile</button>
                   }

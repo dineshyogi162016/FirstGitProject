@@ -2,21 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 const Swal = require("sweetalert2")
 
-const LogOut = () => {
+const LogOutAll = () => {
    const [checkloginn, setcheckloginn] = useState(0);
 
    const navigate = useNavigate();
 
-   const handlelogout = async () => {
+   const handlelogoutall = async () => {
       let currentUser = JSON.parse(localStorage.getItem("LoginData"))
 
       if(currentUser){
-         console.log("currentUser", currentUser )
-         let currentUserToken = currentUser.token
          currentUser = currentUser.user
 
          try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}logout?email=${currentUser}&token=${currentUserToken}`,{
+            const response = await fetch(`${process.env.REACT_APP_API_URL}logoutall?email=${currentUser}`,{
                method: "DELETE",
                headers: {
                   'Content-Type' : 'application/json',
@@ -24,8 +22,6 @@ const LogOut = () => {
                }
             })
             const result = await response.json();
-
-            console.log("result", result)
 
             if(result){
 
@@ -42,7 +38,7 @@ const LogOut = () => {
                });
                Toast.fire({
                   icon: "error",
-                  title: "Successfully LogOut"
+                  title: " LogOut all Successfully"
                });
 
                navigate("/")
@@ -59,7 +55,7 @@ const LogOut = () => {
 
 
    useEffect(() => {
-      handlelogout()
+      handlelogoutall()
 
       const logdata = JSON.parse(localStorage.getItem("LoginData")) || {}
       const checklogin = Object.entries(logdata).length;
@@ -83,4 +79,4 @@ const LogOut = () => {
   )
 }
 
-export default LogOut
+export default LogOutAll

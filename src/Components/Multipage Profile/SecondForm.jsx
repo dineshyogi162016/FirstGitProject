@@ -216,8 +216,8 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
         <div className="d-flex mb-4">
           <div className="w-50">
             <label className='d-flex justify-content-start align-items-center mt-4 mr-3 text-info'><strong>Gender:</strong>
-              <input type="radio" className='ml-5 mr-0 form-control' name='gender' value={"male"} onChange={handlechange} style={{ fontSize: "10px" }} /> Male
-              <input type="radio" className='ml-5 mr-0  form-control' name='gender' value={"female"} onChange={handlechange} style={{ fontSize: "10px" }} /> Female
+              <input type="radio" className='ml-5 mr-0 form-control' name='gender' value={"male"} onChange={handlechange} checked={data.gender === "male"} style={{ fontSize: "10px" }} /> Male
+              <input type="radio" className='ml-5 mr-0  form-control' name='gender' value={"female"} onChange={handlechange} checked={data.gender === "female"} style={{ fontSize: "10px" }} /> Female
             </label>
             {seconderror.gender && <p className='text-danger' >{seconderror.gender}</p>}
           </div>
