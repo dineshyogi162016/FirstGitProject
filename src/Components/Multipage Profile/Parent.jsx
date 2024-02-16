@@ -31,7 +31,7 @@ const Parent = ({ setparenttab }) => {
         <button className="btn btn-outline-dark mx-3" onClick={() => settabno(2)}><strong> Step 2</strong></button> 
         <button className="btn btn-outline-dark mx-3" onClick={() => settabno(3)}><strong> My Profile</strong></button> */}
 
-        {tabno === 1 && <FirstForm settabno={settabno} setdata={setdata} data={data} error={error} seterror={seterror} setparenttab={setparenttab} />}
+        {tabno === 1 && <FirstForm settabno={settabno} setdata={setdata} data={data} error={error} seterror={seterror} action={action} setparenttab={setparenttab} />}
         {tabno === 2 && <SecondForm settabno={settabno} setdata={setdata} data={data} error={error} seterror={seterror} action={action} setaction={setaction} setparenttab={setparenttab} />}
         {/* {tabno === 3 && <Profile settabno={settabno} setdata={setdata} data={data} setaction={setaction} />} */}
       </div>

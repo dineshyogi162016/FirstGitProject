@@ -12,9 +12,7 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
   }
 
   const handlesubmit = async () => {
-    
     if(varify()){
-      // await setdata({...data, ["user"] : JSON.parse(localStorage.getItem("LoginData")).user })
 
       if (action === "Submit") {
         try {
@@ -95,8 +93,6 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
 
           const result = await response.json();
           
-          console.log("result updaate", result )
-          
           if(result) {
 
             // Sweet Alert use 
@@ -125,7 +121,7 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
               // settabno(3)
               setdata({ firstName: "", lastName: "", phoneNo: "", age: "", state: "", city: "", gender: "", hobbies: "" })
               setaction("Submit")
-              sessionStorage.setItem("ProfileUpdateData", JSON.stringify({}))
+              sessionStorage.removeItem("ProfileUpdateData")
 
               setTimeout(() => {
                 setparenttab(1)

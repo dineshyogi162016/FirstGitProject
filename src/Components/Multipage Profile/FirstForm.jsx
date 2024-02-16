@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 
-const FirstForm = ({settabno, setdata , data, setparenttab}) => {
+const FirstForm = ({settabno, setdata , data, setparenttab, action }) => {
    const [firsterror, setfirsterror] = useState({})
 
    var AgeRegex = /^[0-9]/;
@@ -10,9 +10,13 @@ const FirstForm = ({settabno, setdata , data, setparenttab}) => {
       setdata({...data, [e.target.name]: e.target.value});
    }
 
-   const handleVarify = ()=>{
+   const handleVarify = ()=>{      
       if(varify()){
          settabno(2)
+
+         if(action === "Submit"){
+            setdata({...data, ["isVarified"] : false })
+         }
       }
    }
 

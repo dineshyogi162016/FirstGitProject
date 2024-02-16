@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
+import { FcApproval } from "react-icons/fc";
+
 const Swal = require('sweetalert2')
 
 const MyProfile = ({ setparenttab }) => {
    const [myProfile, setmyProfile] = useState({})
    const [checkloginn, setcheckloginn] = useState(0);
+   const [Varify, setVarify] = useState(false)
 
    const navigate = useNavigate()
 
@@ -42,7 +45,8 @@ const MyProfile = ({ setparenttab }) => {
              });
 
          }else {
-         setmyProfile(result)
+            setmyProfile(result)
+            setVarify(result.isVarified)
          }
 
       } catch (error) {
@@ -123,6 +127,77 @@ const MyProfile = ({ setparenttab }) => {
       setparenttab(2)
    }
 
+   const handleVarifyUser = async () => {
+      if(!Varify){
+         try {
+            const response = await fetch(`http://localhost:4000/varificationMail?mail=${myProfile.user}&userid=${myProfile._id}&name=${myProfile.firstName}`);
+
+            const result = await response.json()
+            
+            const Toast = Swal.mixin({
+               toast: true,
+               position: "top-end",
+               showConfirmButton: false,
+               timer: 2000,
+               timerProgressBar: true,
+               didOpen: (toast) => {
+                 toast.onmouseenter = Swal.stopTimer;
+                 toast.onmouseleave = Swal.resumeTimer;
+               }
+            });
+
+            if(result.massage){
+               Toast.fire({
+                  icon: "success",
+                  title: result.massage
+               });
+               
+            }else if(result.error){
+               Toast.fire({
+                  icon: "warning",
+                  title: result.error
+               });
+            }
+
+         } catch (error) {
+            
+            const Toast = Swal.mixin({
+               toast: true,
+               position: "top-end",
+               showConfirmButton: false,
+               timer: 2000,
+               timerProgressBar: true,
+               didOpen: (toast) => {
+                 toast.onmouseenter = Swal.stopTimer;
+                 toast.onmouseleave = Swal.resumeTimer;
+               }
+            });
+
+            Toast.fire({
+               icon: "warning",
+               title: "Something went wrong"
+            });
+
+         }
+      }else{
+         const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+         });
+
+         Toast.fire({
+            icon: "success",
+            title: "Already Varify"
+         });
+      }
+}
    const handleLogout = () => {
       navigate("/logout")
    }
@@ -144,6 +219,8 @@ const MyProfile = ({ setparenttab }) => {
          {checkloginn > 0 && <div className=" text-center my-2 px-4 py-4 ">
             {
                <div className="w-50 mx-auto shadow border p-4">
+                  <button onClick={handleVarifyUser} className={`btn mx-5 my-4 ${Varify === true ? "btn-outline-success" : "btn-outline-danger" } `}> {Varify === true ? ( <> Varified <FcApproval /> </> ) : ("Not Varified" )}</button>
+
                   <button className="btn btn-outline-danger mx-5 my-4" onClick={handleLogout} >LogOut</button>
 
                   <button className='btn btn-outline-danger my-5 mx-5' onClick={handleLogoutall} > LogOut All Accounts </button>
@@ -181,5 +258,6 @@ const MyProfile = ({ setparenttab }) => {
       </>
    )
 }
+
 
 export default MyProfile

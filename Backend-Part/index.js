@@ -15,7 +15,9 @@ const port = process.env.MY_PORT;
 const api_token_key = process.env.JWT_SECRET_KEY;
 const saltRound = 10;
 const Products = require("./products");
-
+const SendOtpMail = require("./Controller/SendOtpMail")
+const SendVarificationMail = require("./Controller/SendVarificationMail")
+const UserVarifyy = require("./Controller/UserVarify")
 
 app.use(cors())
 app.use(express.json())
@@ -248,20 +250,32 @@ app.put("/profile/:_id", varifyToken , async (req, res) => {
 // Searching API 
 app.get("/products/:key", async (req, res) => {
    try {
-      let key = req.params
-      const searchResult = Products.find({
+      let key = req.params.key
+      
+      const searchResult = await Products.find({
          "$or": [
-            {"name": {"regex": ".*"+key+".*", $options : "i" }}
+            {"name": { $regex: key , $options : "i" }}
          ]
       })
+
+      // console.log(searchResult)
       res.send(searchResult)
+
    } catch (error) {
       res.send({error: "Product searching error"})
-      console.log("Product searching error")
    }
 })
 
 
+// varify user Mail sent
+app.get("/varificationMail", SendVarificationMail)
+
+// varify user 
+app.get("/uservarify/:_id", UserVarifyy)
+
+
+// Send Mail API using Controller 
+app.get("/sendMail/:key", SendOtpMail )
 
 
 // for cookie set and get throw backend

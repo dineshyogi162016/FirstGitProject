@@ -9,7 +9,8 @@ const ProfileSchema = new mongoose.Schema({
    city: String,
    gender: String,
    hobbies: String,
-   user:String
+   user:String,
+   isVarified: Boolean
 })
 
 module.exports = mongoose.model("profiledata", ProfileSchema)
