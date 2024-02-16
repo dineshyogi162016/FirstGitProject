@@ -10,9 +10,21 @@
          display: flex;
          align-items: center;
       }
+      @keyframes zoom-in-zoom-out {
+         0% {
+            transform: scale(1, 1);
+         }
+         50% {
+            transform: scale(1.5, 1.5);
+         }
+         100% {
+            transform: scale(1, 1);
+         }
+      }
+
       .section{
          border: 2px solid green;
-         padding: 20px ;
+         padding: 10px 20px 0 20px;
          margin: auto;
          max-width: 330px;
          min-width: 300px;
@@ -20,12 +32,16 @@
          text-align: center;
          border-radius: 20px;
       }
-      .section:hover .image img{
+      /* .section:hover .image img{
          transition: 700ms;
-         transform: scale(1.4);
-      }
+         transform: scale(1.2);
+      } */
       .section .image{
          height: 210px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         animation: zoom-in-zoom-out 1500ms ease infinite;
       }
       span.Varified{
          font-size: 20px;
@@ -45,7 +61,7 @@
    <div class="main">
       <div class="section">
          <div class="image">
-            <img src="https://jaeronline.com/wp-content/uploads/2020/04/verify.jpg" width="320" alt="">
+            <img src="https://jaeronline.com/wp-content/uploads/2020/04/verify.jpg" width="240" alt="">
          </div>
          <div class="content">
             <h1>Varification Completed</h1>

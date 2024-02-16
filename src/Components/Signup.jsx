@@ -1,15 +1,9 @@
-import React, {useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 const Swal = require('sweetalert2')
 
 const Signup = () => {
-   // const [data, setdata] = useState({
-   //    name: "",
-   //    email: "",
-   //    password: ""
-   // });
-
    const [data, setdata] = useState({
       userDetails: {
          name: "",

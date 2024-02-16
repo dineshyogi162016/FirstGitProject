@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
-import { MdDeleteForever } from "react-icons/md";
 import { FcApproval } from "react-icons/fc";
 
 const Swal = require('sweetalert2')
@@ -197,13 +196,99 @@ const MyProfile = ({ setparenttab }) => {
             title: "Already Varify"
          });
       }
-}
-   const handleLogout = () => {
-      navigate("/logout")
+   }
+  
+   const handleLogout = async () => {
+      let currentUser = JSON.parse(localStorage.getItem("LoginData"))
+
+      if(currentUser){
+         let currentUserToken = currentUser.token
+         currentUser = currentUser.user
+
+         try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}logout?email=${currentUser}&token=${currentUserToken}`,{
+               method: "DELETE",
+               headers: {
+                  'Content-Type' : 'application/json',
+                  'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
+               }
+            })
+            const result = await response.json();
+
+            if(result){
+
+               const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 1000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                  }
+               });
+               Toast.fire({
+                  icon: "error",
+                  title: "Successfully LogOut"
+               });
+
+               navigate("/")
+               localStorage.removeItem("LoginData");
+            }
+            
+         } catch (error) {
+            console.log("LogOut Error : ", error)
+         }
+
+      }
+
    }
 
-   const handleLogoutall = () => {
-      navigate("/logoutall")
+   const handleLogoutall = async () => {
+      let currentUser = JSON.parse(localStorage.getItem("LoginData"))
+
+      if(currentUser){
+         currentUser = currentUser.user
+
+         try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}logoutall?email=${currentUser}`,{
+               method: "DELETE",
+               headers: {
+                  'Content-Type' : 'application/json',
+                  'Authorization' : JSON.parse(localStorage.getItem("LoginData")).token
+               }
+            })
+            const result = await response.json();
+
+            if(result){
+
+               const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 1000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                  }
+               });
+               Toast.fire({
+                  icon: "error",
+                  title: " LogOut all Successfully"
+               });
+
+               navigate("/")
+               localStorage.removeItem("LoginData");
+            }
+            
+         } catch (error) {
+            console.log("LogOut Error : ", error)
+         }
+
+      }
+
    }
 
    useEffect(() => {
