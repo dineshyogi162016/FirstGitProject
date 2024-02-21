@@ -32,18 +32,18 @@ app.post("/signup", SignUpAPI )
 // LogIn API 
 app.post("/", LogInAPI)
 
-// LogOut API 
-app.delete("/logoutall", LogOut)
-
 // LogOut All API 
-app.delete("/logout", LogOutAll )
+app.delete("/logoutall", LogOutAll)
+
+// LogOut API 
+app.delete("/logout", LogOut )
 
 
 //Get SignupDetails API 
 app.get("/SignupDetails", varifyToken , GetSignupDetails)
 
 //Delete SignupDetails API 
-app.delete("/SignupDetails/:_id", varifyToken , DeleteSignupDetails)
+app.delete("/SignupDetails/:email", varifyToken , DeleteSignupDetails)
 
 
 // API for MyProfile 

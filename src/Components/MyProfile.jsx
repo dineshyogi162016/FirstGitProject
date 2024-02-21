@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
 import { FcApproval } from "react-icons/fc";
+import SuccessAlert from '../Sweet Alerts/SuccessAlert';
+import WarnAlert from '../Sweet Alerts/WarnAlert';
+import ErrorAlert from '../Sweet Alerts/ErrorAlert';
 
-const Swal = require('sweetalert2')
 
 const MyProfile = ({ setparenttab }) => {
    const [myProfile, setmyProfile] = useState({})
@@ -25,24 +27,10 @@ const MyProfile = ({ setparenttab }) => {
 
          const result = await response.json();
          
-         const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-
-         if(result.result){
-            Toast.fire({
-               icon: "warning",
-               title: result.result
-             });
-
+         if(result.error){
+            // ErrorAlert(result.error)
+            console.log("No profile found")
+            setmyProfile(result)
          }else {
             setmyProfile(result)
             setVarify(result.isVarified)
@@ -65,58 +53,14 @@ const MyProfile = ({ setparenttab }) => {
 
    //       const result = await response.json();
 
-   //       if(result){
-
-   //          // Sweet Alert use 
-   //          const Toast = Swal.mixin({
-   //             toast: true,
-   //             position: "top-end",
-   //             showConfirmButton: false,
-   //             timer: 1500,
-   //             timerProgressBar: true,
-   //             didOpen: (toast) => {
-   //                toast.onmouseenter = Swal.stopTimer;
-   //                toast.onmouseleave = Swal.resumeTimer;
-   //             }
-   //          });
-
-   //          if(result.result){
-   //             Toast.fire({
-   //                icon: "warning",
-   //                title: result.result
-   //             });
-   //          }else{
-   //             Toast.fire({
-   //                icon: "error",
-   //                title: "Successfully Deleted "
-   //             });
-   //             getprofiledata()
-   //          }
-            
+   //       if(result.success){
+   //          SuccessAlert(result.success)
+   //       }else if(result.warning){
+   //          WarnAlert(result.warning)
    //       }
-
-         
          
    //    } catch (error) {
-   //       console.log("Error on MyProfile.jsx:", error)
-
-   //       // Sweet Alert use 
-   //       const Toast = Swal.mixin({
-   //          toast: true,
-   //          position: "top-end",
-   //          showConfirmButton: false,
-   //          timer: 1500,
-   //          timerProgressBar: true,
-   //          didOpen: (toast) => {
-   //            toast.onmouseenter = Swal.stopTimer;
-   //            toast.onmouseleave = Swal.resumeTimer;
-   //          }
-   //        });
-   //        Toast.fire({
-   //          icon: "warning",
-   //          title: "Something went wrong! "
-   //        });
-
+   //       WarnAlert("Something wrong")
    //    }
 
    // }
@@ -132,69 +76,27 @@ const MyProfile = ({ setparenttab }) => {
             const response = await fetch(`http://localhost:4000/varificationMail?mail=${myProfile.user}&userid=${myProfile._id}&name=${myProfile.firstName}`);
 
             const result = await response.json()
-            
-            const Toast = Swal.mixin({
-               toast: true,
-               position: "top-end",
-               showConfirmButton: false,
-               timer: 2000,
-               timerProgressBar: true,
-               didOpen: (toast) => {
-                 toast.onmouseenter = Swal.stopTimer;
-                 toast.onmouseleave = Swal.resumeTimer;
-               }
-            });
 
-            if(result.massage){
-               Toast.fire({
-                  icon: "success",
-                  title: result.massage
-               });
+            if(result.success){
+               // Called Alert Component 
+               SuccessAlert(result.success)
                
             }else if(result.error){
-               Toast.fire({
-                  icon: "warning",
-                  title: result.error
-               });
+               // Called Alert Component 
+               ErrorAlert(result.error)
+
+            }else if(result.warning){
+               // Called Alert Component 
+               WarnAlert(result.warning)
             }
 
          } catch (error) {
-            
-            const Toast = Swal.mixin({
-               toast: true,
-               position: "top-end",
-               showConfirmButton: false,
-               timer: 2000,
-               timerProgressBar: true,
-               didOpen: (toast) => {
-                 toast.onmouseenter = Swal.stopTimer;
-                 toast.onmouseleave = Swal.resumeTimer;
-               }
-            });
-
-            Toast.fire({
-               icon: "warning",
-               title: "Something went wrong"
-            });
-
+            // Called Alert Component 
+               WarnAlert("SomeThing wrong")
          }
       }else{
-         const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-         });
-
-         Toast.fire({
-            icon: "success",
-            title: "Already Varify"
-         });
+         // Called Alert Component 
+         SuccessAlert("Already Varified")
       }
    }
   
@@ -215,23 +117,9 @@ const MyProfile = ({ setparenttab }) => {
             })
             const result = await response.json();
 
-            if(result){
-
-               const Toast = Swal.mixin({
-                  toast: true,
-                  position: "top-end",
-                  showConfirmButton: false,
-                  timer: 1000,
-                  timerProgressBar: true,
-                  didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-                  }
-               });
-               Toast.fire({
-                  icon: "error",
-                  title: "Successfully LogOut"
-               });
+            if(result.success){
+               // Called Alert Component 
+               ErrorAlert(result.success)
 
                navigate("/")
                localStorage.removeItem("LoginData");
@@ -260,27 +148,18 @@ const MyProfile = ({ setparenttab }) => {
                }
             })
             const result = await response.json();
+            console.log("result all logout", result)
+            if(result.success){
 
-            if(result){
-
-               const Toast = Swal.mixin({
-                  toast: true,
-                  position: "top-end",
-                  showConfirmButton: false,
-                  timer: 1000,
-                  timerProgressBar: true,
-                  didOpen: (toast) => {
-                  toast.onmouseenter = Swal.stopTimer;
-                  toast.onmouseleave = Swal.resumeTimer;
-                  }
-               });
-               Toast.fire({
-                  icon: "error",
-                  title: " LogOut all Successfully"
-               });
+               // Called Alert Component 
+               ErrorAlert(result.success)
 
                navigate("/")
                localStorage.removeItem("LoginData");
+            }else if(result.error){
+
+               // Called Alert Component 
+               ErrorAlert(result.error)
             }
             
          } catch (error) {
@@ -310,7 +189,7 @@ const MyProfile = ({ setparenttab }) => {
 
                   <button className='btn btn-outline-danger my-5 mx-5' onClick={handleLogoutall} > LogOut All Accounts </button>
                   {
-                     myProfile.massage && <button className='btn btn-outline-success my-5 mx-5' onClick={() => setparenttab(2)} > Create Profile</button>
+                     myProfile.error && <button className='btn btn-outline-success my-5 mx-5' onClick={() => setparenttab(2)} > Create Profile</button>
                   }
                   {
                      myProfile.user && <div className="">

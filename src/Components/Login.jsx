@@ -1,7 +1,8 @@
 import React, {useState } from 'react'
 import { FaRegEye,FaRegEyeSlash  } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
-const Swal = require('sweetalert2')
+import SuccessAlert from '../Sweet Alerts/SuccessAlert';
+import WarnAlert from '../Sweet Alerts/WarnAlert';
 
 const Login = () => {
    const [data, setdata] = useState({
@@ -45,60 +46,21 @@ const Login = () => {
 
             const result = await response.json();
 
-            // Sweet Alert use 
-            const Toast = Swal.mixin({
-               toast: true,
-               position: "top-end",
-               showConfirmButton: false,
-               timer: 2000,
-               timerProgressBar: true,
-               didOpen: (toast) => {
-                 toast.onmouseenter = Swal.stopTimer;
-                 toast.onmouseleave = Swal.resumeTimer;
-               }
-            });
+            if(result.success){
+               SuccessAlert(result.success)
 
-             if(result.loginMeta){
                localStorage.setItem("LoginData", JSON.stringify(result.loginMeta))
-               Toast.fire({
-                  icon: "success",
-                  title: result.massage
-               });
 
                setTimeout(() => {
                   navigate("/home")
                }, 1500);
                
-            }else if(result.massage){
-               Toast.fire({
-                  icon: "warning",
-                  title: result.massage
-               });
-            }else{
-               Toast.fire({
-                  icon: "warning",
-                  title: result.massage
-               });
+            }else if(result.warning){
+               WarnAlert(result.warning)
             }
 
          } catch (error) {
-            // Sweet Alert use 
-            const Toast = Swal.mixin({
-               toast: true,
-               position: "top-end",
-               showConfirmButton: false,
-               timer: 2000,
-               timerProgressBar: true,
-               didOpen: (toast) => {
-                 toast.onmouseenter = Swal.stopTimer;
-                 toast.onmouseleave = Swal.resumeTimer;
-               }
-             });
-             Toast.fire({
-               icon: "warning",
-               title: "Something went wrong!"
-             });
-
+            WarnAlert("Something wrong")
          }
 
       }

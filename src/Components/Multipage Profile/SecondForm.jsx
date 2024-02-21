@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
-const Swal = require('sweetalert2')
+import SuccessAlert from '../../Sweet Alerts/SuccessAlert';
+import WarnAlert from '../../Sweet Alerts/WarnAlert';
+import ErrorAlert from '../../Sweet Alerts/ErrorAlert';
+
 const StatesAndCities = require("../../ProjectData/StatesWithCity.json")
 
 
@@ -27,59 +30,22 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
 
           const result = await response.json();
 
-          if(result) {
-            // Sweet Alert use 
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false,
-              timer: 1500,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-              }
-            });
-            if(result.result){
-              Toast.fire({
-                icon: "warning",
-                title: result.result
-              });
-            } else{
-              Toast.fire({
-                icon: "success",
-                title: "Successfully Profile Created "
-              });
+          if(result.success){
+            SuccessAlert(result.success)
+            
+            setTimeout(() => {
+              setparenttab(1)
+            }, 1500);
 
-              setTimeout(() => {
-                setparenttab(1)
-              }, 1500);
-
-              setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "" })
-            }
-          }          
+            setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "" })        
+          }else if(result.warning){
+            WarnAlert(result.warning)
+          }
 
         } catch (error) {
-          console.log("Error in Profile SecondForm.jsx:", error)
-          
-          // Sweet Alert use 
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "warning",
-            title: "Something went wrong! "
-          });
-
+          WarnAlert("Something wrong")
         }
+
       } else if (action === "Update") {
         try {
           const response = await fetch(`${process.env.REACT_APP_API_URL}profile/${data._id}`, {
@@ -93,44 +59,21 @@ const SecondForm = ({ settabno, setdata, data, error, seterror, action, setactio
 
           const result = await response.json();
           
-          if(result) {
+          if(result.success){
+            SuccessAlert(result.success)
+            
+            setTimeout(() => {
+              setparenttab(1)
+            }, 1500);
 
-            // Sweet Alert use 
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false,
-              timer: 1500,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
-              }
-            });
-            if(result.result){
-              Toast.fire({
-                icon: "warning",
-                title: result.result
-              });
-            } else{
-              Toast.fire({
-                icon: "success",
-                title: "Successfully Profile Updated "
-              });
-
-              // settabno(3)
-              setdata({ firstName: "", lastName: "", phoneNo: "", age: "", state: "", city: "", gender: "", hobbies: "" })
-              setaction("Submit")
-              sessionStorage.removeItem("ProfileUpdateData")
-
-              setTimeout(() => {
-                setparenttab(1)
-              }, 1500);
-            }
-          }  
+            setdata({ firstName: "", lastName: "", hobbies: "", age: "", state: "", city: "", gender: "" })        
+            
+          }else if(result.warning){
+            WarnAlert(result.warning)
+          }
 
         } catch (error) {
-          console.log("Error:", error)
+          WarnAlert("Something wrong")
         }
 
       }

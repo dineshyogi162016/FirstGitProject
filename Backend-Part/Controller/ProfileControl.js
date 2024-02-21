@@ -8,7 +8,7 @@ const GetProfile = async (req, res) => {
    if(ProfileDetails){
       res.status(200).send(ProfileDetails);
    }else{
-      res.status(404).send({massage: "No profile found"})
+      res.status(404).send({error: "No profile found"})
    }
 
    // console.log("Profile data", ProfileDetails);
@@ -18,15 +18,25 @@ const GetProfile = async (req, res) => {
 const CreateProfile = async (req, res) => {
    let response = await ProfileSchema(req.body)
    let result = await response.save()
-   res.send(result)
-   // console.log("your data saved: ", result)
+
+   if(result){
+      res.status(200).send({success: "Create profile success"})
+      // console.log("your data saved: ", result)
+   }else{
+      res.status(500).send({warning: "Something went wrong"})
+   }
 }
 
 
 const DeleteProfile = async (req, res) => {
    const response = await ProfileSchema.deleteOne(req.params);
-   res.send(response);
-   // console.log(response)
+   
+   if(response.deletedCount === 1){
+      res.status(200).send({success: "Delete profile success"})
+   }else{
+      res.status(500).send({warning: "Something went wrong"})
+   }
+
 }
 
 const UpdateProfile = async (req, res) => {
@@ -36,8 +46,14 @@ const UpdateProfile = async (req, res) => {
          $set: req.body
       }
    );
-   res.send(response);
-   // console.log("Update successfully: ", response)
+   
+   if(response){
+      res.status(200).send({success: "Update profile success"})
+      // console.log("your data saved: ", result)
+   }else{
+      res.status(500).send({warning: "Something went wrong"})
+   }
+
 }
 
 

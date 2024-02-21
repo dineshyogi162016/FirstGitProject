@@ -3,9 +3,9 @@ const ProfileSchema = require("../Schema")
 const path = require("path")
 const GenerateOTP = require("otp-generator")
 
+let senderMail = 'pierce.corkery@ethereal.email'
+let senderPass = 'J13cvEDAh8gzKXAVNE'
 
-let senderMail = 'donato.harber@ethereal.email'
-let senderPass = 'TT4nn2yEW3fqs4MBJt'
 let  publicPath = __dirname
 
 publicPath = path.resolve(publicPath, "..")
@@ -35,13 +35,12 @@ const SendVarificationMail = (req, res) =>{
          if(err){
             res.status(500).send({error: "Mail not sent"})
          }else{
-            res.status(200).send({massage: "Mail has been sent"})
-            console.log("Mail has been sent.")
+            res.status(200).send({success: "Mail has been sent"})
          }
       })
 
    } catch (error) {
-      console.log("Something went wrong!")
+      res.status(500).send({warning: "Something went wrong"})
    }
 }
 

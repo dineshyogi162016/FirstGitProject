@@ -4,7 +4,9 @@ const FirstForm = ({settabno, setdata , data, setparenttab, action }) => {
    const [firsterror, setfirsterror] = useState({})
 
    var AgeRegex = /^[0-9]/;
-   var phoneNumRegex = /^[0-9]{10}$/ ;
+   // var phoneNumRegex = /^[0-9]{10}$/ ;
+   var phoneNumRegex = /^\+\d{1,4}\d*$/ ;
+   // var phoneNumRegex = /^[0-9-+]+$/ ;
 
    const handlechange = (e)=>{
       setdata({...data, [e.target.name]: e.target.value});
@@ -55,7 +57,8 @@ const FirstForm = ({settabno, setdata , data, setparenttab, action }) => {
          localerror.phoneNo = "Phone No. is required!";
          valid = false;
       }else if(!phoneNumRegex.test(data.phoneNo)){
-         localerror.phoneNo = "No. must be No. and 10 digits"
+         // localerror.phoneNo = "No. must be No. and 10 digits"
+         localerror.phoneNo = "Not valid number"
          valid = false; 
       }
 

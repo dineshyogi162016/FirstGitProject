@@ -5,15 +5,15 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./Components/Home";
 import ParentOprate from "./Components/Multipage Profile/ParentOprate";
 import SignupDetails from "./Components/SignupDetails";
-import LogOut from "./Components/LogOut";
 import PageNotFound from "./Components/PageNotFound";
-import LogOutAll from "./Components/LogOutAll";
 import LogOutProtectedRoots from "./Components/ProtectedRoot/LogOutProtectedRoots";
 import LogInProtectedRoots from "./Components/ProtectedRoot/LogInProtectedRoots";
 
+// import LogOut from "./Components/LogOut";
+// import LogOutAll from "./Components/LogOutAll";
+
 const MainPage = () => {
-   // let user = JSON.parse(localStorage.getItem("LoginData"))
-   // console.log("userrrrr", user )
+   
    return (
       <> 
          <Routes>
@@ -25,9 +25,11 @@ const MainPage = () => {
             <Route path="/home" element={<LogOutProtectedRoots Component={Home} />} />
             <Route path="/SignupDetails" element={<LogOutProtectedRoots Component={SignupDetails} />} />
             <Route path="/profile" element={<LogOutProtectedRoots Component={ParentOprate} />} />
-            <Route path="/logout" element={<LogOutProtectedRoots Component={LogOut} />} />
-            <Route path="/logoutall" element={<LogOutProtectedRoots Component={LogOutAll} />} />
             <Route path="*" element={<LogOutProtectedRoots Component={PageNotFound} />} />
+
+            {/* <Route path="/logout" element={<LogOutProtectedRoots Component={LogOut} />} />
+            <Route path="/logoutall" element={<LogOutProtectedRoots Component={LogOutAll} />} /> */}
+
          </Routes> 
       </>
    )

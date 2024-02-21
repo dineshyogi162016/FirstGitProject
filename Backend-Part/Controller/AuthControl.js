@@ -17,7 +17,7 @@ const SignUpAPI = async(req,res) => {
    let ifUserExists = signupResponse.find( e => e.userDetails.email === userSignupEmail )
    
    if(ifUserExists){
-      res.status(404).send({massage: "User already exist"})
+      res.status(404).send({warning: "User already exist"})
    }else{
       bcrypt.hash(userSignupPassword, saltRound, async(err, salt) => {
          userSignupPassword = salt;
@@ -34,8 +34,9 @@ const SignUpAPI = async(req,res) => {
          })      
          
          const result = await signInstance.save()
-         res.send(result)
-         // console.log("signup success: ", result )
+         if(result){
+            res.status(200).send({success: "Resistration successfull"})
+         }
          
       })
    }
@@ -54,7 +55,7 @@ const LogInAPI =  async (req,res) => {
    let ifUserExists = signupResponse.find( e => e.userDetails.email === userLoginEmail )
 
    if(!ifUserExists){
-      res.status(404).send({massage: "No User Found"})
+      res.status(404).send({warning: "No User Found"})
    }else{      
       bcrypt.compare(userLoginPassword, ifUserExists.userDetails.password, (err, result)=>{
          if(result){
@@ -76,22 +77,21 @@ const LogInAPI =  async (req,res) => {
 
             if(!ifUserSignedIn){
                let result = await loginDataInstance.save();
-               res.status(200).send({ massage: "Login Success" , loginMeta: {user : result.userDetails.email, token : LoginToken} })
+               res.status(200).send({ success: "Login Success" , loginMeta: {user : result.userDetails.email, token : LoginToken} })
                
             }else{
-
                let result = await LoginSchema.updateOne(
                   {_id : ifUserSignedIn._id },
                   {$addToSet : {authToken : LoginToken}}
                )
 
-               res.status(200).send({ massage: "Another Login Success" , loginMeta: {user : loginDataInstance.userDetails.email, token : LoginToken } })
+               res.status(200).send({ success: "Another Login Success" , loginMeta: {user : loginDataInstance.userDetails.email, token : LoginToken } })
 
             }
             
          })
          }else{
-            res.status(404).send({massage: "Wrong Password"})
+            res.status(404).send({warning: "Wrong Password"})
          }
 
       })
@@ -99,8 +99,8 @@ const LogInAPI =  async (req,res) => {
 
 }
 
-// LogOut API 
-const LogOut = async (req, res) => {
+// LogOutAll API 
+const LogOutAll = async (req, res) => {
    const userMail = req.query.email;
    
    let LoginResponse = await LoginSchema.find() 
@@ -108,15 +108,15 @@ const LogOut = async (req, res) => {
    
    if(ifUserExists){
       const response = await LoginSchema.deleteOne({"_id" : ifUserExists._id})
-      res.status(200).send({massage: "LogOut All Accounts Success"})
+      res.status(200).send({success: "LogOut All Accounts Success"})
    }else{
-      res.status(404).send({massage: "No User Found"})
+      res.status(404).send({error: "No User Found"})
    }
 
 }
 
-// LogOutAll API 
-const LogOutAll = async (req, res) => {
+// LogOut API 
+const LogOut = async (req, res) => {
 
    const userMail = req.query.email;
    const currentUserToken = req.query.token;
@@ -132,11 +132,11 @@ const LogOutAll = async (req, res) => {
             {"_id": ifUserExists._id },
             {$pull: {authToken: currentUserToken}}
          )
-         res.status(200).send({massage: "LogOut Success"})
+         res.status(200).send({success: "LogOut Success"})
          
       }else{
          const response = await LoginSchema.deleteOne({"_id" : ifUserExists._id})
-         res.status(200).send({massage: "LogOut SuccessFull"})
+         res.status(200).send({success: "LogOut SuccessFull"})
       }
    }
 }

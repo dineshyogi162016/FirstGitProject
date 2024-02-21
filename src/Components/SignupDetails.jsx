@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdDeleteForever } from "react-icons/md";
-const Swal = require('sweetalert2')
+import WarnAlert from '../Sweet Alerts/WarnAlert';
+import ErrorAlert from '../Sweet Alerts/ErrorAlert';
+
 
 const SignupDetails = () => {
    const [checkloginn, setcheckloginn] = useState(0);
    const [signupdata, setsignupdata] = useState([])
    const [APIMassage, setAPIMassage] = useState("")
-
+   
+   const navigate = useNavigate()
+   
    const getRegisterUsers = async() => {
       try {
          let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails`,{
@@ -29,22 +33,15 @@ const SignupDetails = () => {
          // console.log("all Signup users: ",result)
 
       } catch (error) {
-         console.log("All register users Error: ", error )
+         console.log("No data find something error : ", error )
+         WarnAlert("Data finding Error")
       }
    }
 
 
    const handledelete = async(e)=>{
-      // let predelete = [...signupdata];
-      // predelete.splice(i,1);
-      // setsignupdata(predelete);
-      // localStorage.setItem("SignupData", JSON.stringify(predelete));
-      // console.log(predelete)
-
-      // console.log("data", e)
-
       try {
-         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails/${e._id}`,{
+         let response = await fetch(`${process.env.REACT_APP_API_URL}SignupDetails/${e.email}`,{
             method: "DELETE",
             headers : {
                "Content-Type" : "application/json",
@@ -53,59 +50,25 @@ const SignupDetails = () => {
          })
 
          const result = await response.json()
+         
+         if(result.success){
+            ErrorAlert(result.success)
 
-         if(result){
+            getRegisterUsers()
 
-            // Sweet Alert use 
-            const Toast = Swal.mixin({
-               toast: true,
-               position: "top-end",
-               showConfirmButton: false,
-               timer: 1500,
-               timerProgressBar: true,
-               didOpen: (toast) => {
-                 toast.onmouseenter = Swal.stopTimer;
-                 toast.onmouseleave = Swal.resumeTimer;
-               }
-             });
+            let currentUser = JSON.parse(localStorage.getItem("LoginData")).user
 
-            if(result.result){
-               Toast.fire({
-                  icon: "warning",
-                  title: result.result
-                });
-   
-            }else {
-               Toast.fire({
-                  icon: "error",
-                  title: "Successfully Deleted "
-                });
-               
-                getRegisterUsers();
+            if(e.email === currentUser){
+               localStorage.removeItem("LoginData")
+               navigate("/")
             }
-             
 
+         }else if(result.warning){
+            WarnAlert(result.warning)
          }
 
       } catch (error) {
-         console.log("Signup Details delete error:", error)
-
-         // Sweet Alert use 
-         const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "warning",
-            title: "Something went wrong, please try again"
-          });
+         WarnAlert("Something wrong")
       }
 
    }

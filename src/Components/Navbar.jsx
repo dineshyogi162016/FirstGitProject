@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { CgProfile } from "react-icons/cg";
-const Swal = require('sweetalert2')
 
 const Navbar = () => {
    const [MyName, setMyName] = useState("No Name")
@@ -39,7 +38,7 @@ const Navbar = () => {
    }
   return (
     <>
-      {user && <nav className="navbar navbar-expand-lg navbar-light bg-light shadow" style={{position:"sticky", top:"0", zIndex:"10", padding: "3px 20px"}}>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light shadow" style={{position:"sticky", top:"0", zIndex:"10", padding: "3px 20px"}}>
             <Link className="navbar-brand" to={"/home"}><strong>Welcome</strong></Link>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                <span className="navbar-toggler-icon"></span>
@@ -60,7 +59,7 @@ const Navbar = () => {
                </div>
 
             </div>
-      </nav>}
+      </nav>
     </>
   )
 }
